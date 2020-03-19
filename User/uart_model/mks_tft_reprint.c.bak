@@ -1,0 +1,21 @@
+
+#include "mks_tft_com.h"
+
+unsigned long mksTestCnt = 1;
+unsigned char testTxBuf[10]={'M','1','0','5','\n'};
+unsigned char testRxBuf[100];
+
+
+void mksCmdTest(void)
+{
+		if(mksTestCnt%100 == 0 )		//5s
+		{
+			pushFIFO(&gcodeCmdTxFIFO,&testTxBuf[0]);
+			memset(&testRxBuf[0],0,sizeof(testRxBuf));
+			
+			while(popFIFO(&gcodeCmdRxFIFO,&testRxBuf[0]) == fifo_ok);		
+				
+
+		}
+		mksTestCnt++;	
+}
