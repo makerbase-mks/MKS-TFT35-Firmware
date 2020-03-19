@@ -1,1 +1,1 @@
-# MKS-TFT35-70-Firmware
+# MKS-TFT35-Firmware
