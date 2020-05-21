@@ -2,6 +2,9 @@
 #define MULTI_LANGUAGE_H
 
 #include "main.h"
+#include "Language_en.h"
+#include "Language_s_cn.h"
+#include "Language_t_cn.h"
 
 extern void disp_language_init();
 #if 0
@@ -32,7 +35,339 @@ extern void disp_language_init();
 #define FONT_BUTTON	GUI_FontHZ_fontHz14
 #define FONT_STATE_INF	GUI_FontHZ_fontHz14
 #define FONT_TITLE		GUI_FontHZ_fontHz14
+///
+typedef struct machine_common_disp
+{
+	const char *default_value;
+	
+	const char *next;
+	const char *previous;
+	const char *back;
+	
+	const char *MachineConfigTitle;
+	const char *MachineType;
+	const char *Stroke;
+	const char *HomeDir;
+	const char *EndStopType;
+	const char *FilamentConf;
+	const char *LevelingConf;
+	const char *FirmwareType;	
+	const char *PausePosConf;
+	const char *BaudRateConf;
+	const char *WifiConf;
 
+	const char *wifiConfTile;
+	const char *WifiMode;
+	const char *WifiKey;
+	const char *cloudEnable;
+	const char *cloudHost;
+	const char *cloudPort;
+	const char *WifiMode0;
+	const char *WifiMode1;
+	const char *WifiName;
+	
+
+	const char *MachineTypeConfTitle;
+	const char *xyz;
+	const char *delta;
+	const char *corexy;
+	const char *normal;
+
+	const char *FirmwareTypeConfTitle;
+	const char *marlin;
+	const char *repetier;
+	const char *smoothie;
+	
+	const char *BaudRateConfTitle;
+	const char *rate1;
+	const char *rate2;
+	const char *rate3;
+	const char *rate4;
+	
+	
+	const char *StrokeConfTitle;
+	const char *xStroke;
+	const char *yStroke;
+	const char *zStroke;
+
+	const char *xmin;
+	const char *ymin;
+	const char *zmin;
+
+	const char *HomeDirConfTitle;
+	const char *xHomeDir;
+	const char *yHomeDir;
+	const char *zHomeDir;
+	const char *min;
+	const char *max;
+	
+	const char *PositionPuaseConfTitle;
+	const char *xPosition;
+	const char *yPosition;
+	const char *zPosition;
+        
+	const char *EndstopConfTitle;
+	const char *xEndstop_min;
+	const char *yEndstop_min;
+	const char *zEndstop_min;
+	const char *xEndstop_max;
+	const char *yEndstop_max;
+	const char *zEndstop_max;	
+	const char *FilamentEndstop;
+	const char *LevelingEndstop;
+	const char *opened;
+	const char *closed;
+
+	const char *FilamentConfTitle;
+	const char *InTemperature;
+	const char *InLength;
+	const char *InSpeed;
+	const char *OutTemperature;
+	const char *OutLength;
+	const char *OutSpeed;	
+
+	const char *LevelingParaConfTitle;
+	const char *LevelingParaConf;
+	const char *DeltaLevelConf;
+	const char *XYZLevelconf;
+	
+	const char *LevelingSubConfTitle;
+	const char *AutoLevelEnable;
+	const char *BLtouchEnable;
+	const char *ProbePort;
+	const char *ProbeXoffset;
+	const char *ProbeYoffset;
+	const char *ProbeZoffset;
+	const char *ProbeXYspeed;
+	const char *ProbeZspeed;
+	const char *enable;
+	const char *disable;
+	const char *z_min;
+	const char *z_max;
+	const char *leveling_z_speed;
+	const char *leveling_xy_speed;
+	const char *leveling_z_high;
+	const char *AutoLevelCmd;
+
+	const char *LevelingSubDeltaConfTitle;
+	const char *MachineRadius;
+	const char *DiagonalRod;
+	const char *PrintableRadius;
+	const char *DeltaHeight;
+	const char *SmoothRodOffset;
+	const char *EffectorOffset;
+	const char *CalibrationRadius;
+	
+	const char *LevelingSubXYZConfTitle;
+	//const char *Level_positon1;
+	//const char *Level_positon2;
+	//const char *Level_positon3;
+	//const char *Level_positon4;
+
+	const char *TemperatureConfTitle;
+	const char *NozzleConf;
+	const char *HotBedConf;
+	const char *PreheatTemperConf;
+
+	const char *NozzleCnt;
+	const char *NozzleConfTitle;
+	const char *NozzleType;
+	const char *NozzleAdjustType;
+	const char *NozzleMinTemperature;
+	const char *NozzleMaxTemperature;
+	const char *Extrude_Min_Temper;
+
+	const char *HotbedEnable;
+	const char *HotbedConfTitle;
+	const char *HotbedAjustType;
+	const char *HotbedMinTemperature;
+	const char *HotbedMaxTemperature;
+
+	const char *MotorConfTitle;
+	const char *MaxFeedRateConf;
+	const char *AccelerationConf;
+	const char *JerkConf;
+	const char *StepsConf;
+	const char *MotorDirConf;
+	const char *HomeFeedRateConf;
+	const char *CurrentConf;
+	const char *TMCBumpSen;
+	const char *GetInfo;
+	const char *SaveInfo;
+	
+	const char *consosTitle;
+
+	const char *MaxFeedRateConfTitle;
+	const char *XMaxFeedRate;
+	const char *YMaxFeedRate;
+	const char *ZMaxFeedRate;
+	const char *E0MaxFeedRate;
+	const char *E1MaxFeedRate;
+
+	const char *AccelerationConfTitle;
+	const char *PrintAcceleration;
+	const char *RetractAcceleration;
+	const char *TravelAcceleration;
+	const char *X_Acceleration;
+	const char *Y_Acceleration;
+	const char *Z_Acceleration;
+	const char *E0_Acceleration;
+	const char *E1_Acceleration;
+
+	const char *JerkConfTitle;
+	const char *X_Jerk;
+	const char *Y_Jerk;
+	const char *Z_Jerk;
+	const char *E_Jerk;
+
+	const char *StepsConfTitle;
+	const char *X_Steps;
+	const char *Y_Steps;
+	const char *Z_Steps;
+	const char *E0_Steps;
+	const char *E1_Steps;
+	
+	const char *CurrentConfTitle;
+	const char *X_Current;
+	const char *Y_Current;
+	const char *Z_Current;
+	const char *E0_Current;
+	const char *E1_Current;
+	
+	const char *TMCBumpTitle;
+	const char *X_Sensivisity;
+	const char *Y_Sensivisity;
+	const char *Z_Sensivisity;
+
+	const char *MotorDirConfTitle;
+	const char *X_MotorDir;
+	const char *Y_MotorDir;
+	const char *Z_MotorDir;
+	const char *E0_MotorDir;
+	const char *E1_MotorDir;
+	const char *Invert_1;
+	const char *Invert_0;
+
+	const char *HomeFeedRateConfTitle;
+	const char *XY_HomeFeedRate;
+	const char *Y_HomeFeedRate;
+	const char *Z_HomeFeedRate;
+
+	const char *AdvancedConfTitle;
+	const char *PwrOffDection;
+	const char *PwrOffAfterPrint;
+	const char *HaveUps;
+	const char *Z2andZ2Endstop;
+	const char *EnablePinsInvert;
+	const char *h_level;
+	const char *l_level;
+	const char *pwr_saveMode;
+	const char *disable_PB0_PB1;
+	const char *pwr_saveMode1;
+	const char *pwr_saveMode2;
+	const char *level_PB0;
+	const char *level_PB1;
+	const char *z_error;
+	
+	const char *Z2ConfTitle;
+	const char *Z2Enable;
+	const char *Z2EndstopEnable;
+	const char *Z2Port;
+
+	const char *EnablePinsInvertTitle;
+	const char *XInvert;
+	const char *YInvert;
+	const char *ZInvert;
+	const char *EInvert;
+
+	const char *key_1;	
+	const char *key_2;	
+	const char *key_3;	
+	const char *key_4;	
+	const char *key_5;	
+	const char *key_6;	
+	const char *key_7;	
+	const char *key_8;	
+	const char *key_9;	
+	const char *key_0;	
+	const char *key_point;	
+	const char *key_back;	
+	const char *key_rest;	
+	const char *key_confirm;	
+	const char *negative;
+	const char *low_level;
+	const char *high_level;
+
+	const char *CustomConfTitle;
+	const char *display;
+	const char *button;
+
+	const char *buttonConfTitle;
+	const char *function_btn1_display;
+	const char *function_btn1_cmd;
+	const char *quickStop_btn;
+	const char *zoffset_btn_display;
+	const char *more_btn;
+	const char *print_more_btn;
+	const char *displayCalibrate;
+
+	const char *MoreButtonConfTitle;
+	const char *moreItem_cnt;
+	const char *moreItem_btn1;
+	const char *moreItem_btn2;
+	const char *moreItem_btn3;
+	const char *moreItem_btn4;
+	const char *moreItem_btn5;
+	const char *moreItem_btn6;
+	const char *moreItem_btn7;	
+
+	const char *MoreFunctionConfTitle;
+	const char *morefunc_cnt;
+	const char *moreItem_func1;
+	const char *moreItem_func2;
+	const char *moreItem_func3;
+	const char *moreItem_func4;
+	const char *moreItem_func5;
+	const char *moreItem_func6;
+	const char *moreItem_func7;	
+	
+	const char *DisplayConfTitle;
+	const char *background_color;
+	const char *title_color;
+	const char *state_bkcolor;
+	const char *state_text_color;
+	const char *filename_bkcolor;
+	const char *filename_textcolor;
+	const char *btn_bkcolor;
+	const char *btn_textcolor;
+	const char *state_btn_textcolor;
+	const char *state_btn_bkcolor;
+	const char *back_btn_textcolor;
+	const char *back_btn_bkcolor;
+	const char *sel_btn_bkcolor;
+	const char *sel_btn_textcolor;
+	const char *dialog_btn_bkcolor;
+	const char *dialog_btn_textcolor;
+
+	const char *btn_3D_ecffects;
+	const char *btn_text_offset;
+	const char *screen_overturn;
+	const char *display_mode;
+	const char* display_error_msg;
+	const char* simple_theme;//Simple theme
+	const char *classic_theme;				//Classic theme
+	const char *babastepting;
+	const char *colorConfigTitle;
+	const char * blue;
+	const char * yellow;
+	const char * white;
+	const char * black;
+	const char * red;
+	const char * cyan;
+	const char * gray;
+	const char * green;
+}machine_common_def;
+extern machine_common_def machine_menu;
 typedef struct common_menu_disp
 {
 	char *text_back;
@@ -42,6 +377,8 @@ typedef struct common_menu_disp
 	char *print_special_title;
 	char *pause_special_title;
 	char *operate_special_title;
+	const char *next;
+	const char *previous;
 }common_menu_def;
 extern common_menu_def common_menu;
 
@@ -59,6 +396,7 @@ typedef struct main_menu_disp
 	char *set;
 	char *tool;
 	char *more;
+	const char *machine_para;
 }main_menu_def;
 extern main_menu_def main_menu;
 typedef struct preheat_menu_disp
@@ -153,7 +491,7 @@ typedef struct leveling_menu_disp
 	char *position3;
 	char *position4;
 	char *position5;
-	
+	char *count;
 	char *back;
 }leveling_menu_def;
 extern leveling_menu_def leveling_menu;
@@ -169,6 +507,7 @@ typedef struct set_menu_disp
 	char *motoroff;
 	char *shutdown;
 	char *language;
+	const char *machine_para;//
 	char *back;
 }set_menu_def;
 extern set_menu_def set_menu;
@@ -203,6 +542,7 @@ typedef struct wifi_menu_disp
 	char *disconnected;
 	char *exception;
 	char *back;
+	char *reconnect;
 }wifi_menu_def;
 extern wifi_menu_def wifi_menu;
 typedef struct cloud_menu_disp
@@ -400,6 +740,8 @@ typedef struct print_file_dialog_disp
 	char *print_from_breakpoint;
 	char *file_name_too_long_error;
 	char *close_machine_error;
+	char *filament_no_press;
+	char *wifi_enable_tips;
 }print_file_dialog_menu_def;
 extern print_file_dialog_menu_def print_file_dialog_menu;
 
@@ -429,6 +771,42 @@ typedef struct tool_menu_disp
 }tool_menu_def;
 extern tool_menu_def tool_menu;	
 
+typedef struct MachinePara_menu_disp
+{
+	const char *title;
+	const char *MachineSetting;
+	const char *TemperatureSetting;
+	const char *MotorSetting;
+	const char *AdvanceSetting;
+	const char *Custom;
+	const char *Console;
+	//const char *back;
+}MachinePara_menu_def;
+extern MachinePara_menu_def MachinePara_menu;
+
+typedef struct MachineSettings_menu_disp
+{
+	const char *title;
+	const char *Machine;
+	const char *Stroke;
+	const char *HomeDir;
+	const char *EndStopType;
+	const char *filamet;
+	const char *leveling;
+	const char *back;
+}MachineSettings_menu_def;
+extern MachineSettings_menu_def MachineSettings_menu;
+
+typedef struct TemperatureSettings_menu_disp
+{
+	const char *title;
+	const char *nozzle;
+	const char *hotbed;
+	const char *preheat;
+	const char *back;
+}TemperatureSettings_menu_def;
+extern TemperatureSettings_menu_def TemperatureSettings_menu;
+
 /*****************************************/
 //********************************************//
 #if defined(TFT70)
@@ -441,6 +819,9 @@ extern tool_menu_def tool_menu;
 #define TEXT_VALUE_mm                 ": %dmm"
 #define TEXT_VALUE_cm                 ": %dcm"
 #define TEXT_VALUE_m                  ": %dm"
+
+#define TEMP_UNIT_SYBOL               "%d℃"
+#define FLOAT_TEMP_UNIT_SYBOL               "%.1f℃"
 
 #define TEXT_1C						"1℃"
 #define TEXT_5C						"5℃"
@@ -485,7 +866,7 @@ extern tool_menu_def tool_menu;
 #define HOME_ALL_TEXT				"All"
 
 #define ABOUT_TYPE_TEXT				"MKS TFT"
-#define ABOUT_VERSION_TEXT			"1.0.5"
+#define ABOUT_VERSION_TEXT			"1.0.6"
 //#define ABOUT_WIFI_TEXT				"WiFi:"
 
 #define FAN_OPEN_TEXT				"100%"
@@ -514,6 +895,7 @@ extern tool_menu_def tool_menu;
 #define DIALOG_UPLOAD_SPEED_EN				"Speed"
 #define DIALOG_UPDATE_WIFI_FIRMWARE_EN		"Updating wifi model firmware"
 #define DIALOG_UPDATE_WIFI_WEB_EN			"Updating wifi model web data"
+#define DIALOG_SVAE_DATE_SUCCESS_EN			"Save date to eeprom successful"
 
 #define ZOFFSET_STEP001      "0.01mm"
 #define ZOFFSET_STEP01      "0.1mm"
@@ -522,6 +904,7 @@ extern tool_menu_def tool_menu;
 #define TEXT_BABY_STEP  "Babystep"
 
 //*************简体中文***********************//
+/*
 #define TOOL_TEXT_CN			    "工具"
 #define PREHEAT_TEXT_CN 	        "预热"
 #define	MOVE_TEXT_CN				"移动"
@@ -738,7 +1121,7 @@ extern tool_menu_def tool_menu;
 #define DIALOG_UNBIND_PRINTER_CN            "解除绑定?"
 
 #define CALIBRATE_CN  "触屏校准"
-
+*/
 //***************繁体中文**********************//
 #define TOOL_TEXT_T_CN							"工具"
 #define PREHEAT_TEXT_T_CN 					    "預熱"
@@ -1047,6 +1430,7 @@ extern tool_menu_def tool_menu;
 #define WIFI_CONNECTED_TEXT_EN				        "Connected"
 #define WIFI_DISCONNECTED_TEXT_EN			        "Disconnected"
 #define WIFI_EXCEPTION_TEXT_EN				        "Exception"
+#define WIFI_RECONNECT_TEXT_EN         "Reconnect"
 #define CLOUD_TEXT_EN								"Cloud"
 #define CLOUD_BIND_EN								"Bind"
 #define CLOUD_UNBIND_EN							    "Unbind"
@@ -1278,6 +1662,7 @@ extern tool_menu_def tool_menu;
 #define WIFI_CONNECTED_TEXT_JP				        "CONNECTED"
 #define WIFI_DISCONNECTED_TEXT_JP			        "DISCONNECTED"
 #define WIFI_EXCEPTION_TEXT_JP				        "EXCEPTION"
+#define WIFI_RECONNECT_TEXT_JP         "Reconnect"
 #define CLOUD_TEXT_JP								"Cloud"
 #define CLOUD_BIND_JP								"Bind"
 #define CLOUD_UNBIND_JP							    "Unbind"
@@ -1487,6 +1872,7 @@ extern tool_menu_def tool_menu;
 #define WIFI_CONNECTED_TEXT_GN				"CONNECTED"
 #define WIFI_DISCONNECTED_TEXT_GN			"DISCONNECTED"
 #define WIFI_EXCEPTION_TEXT_GN				"EXCEPTION"
+#define WIFI_RECONNECT_TEXT_GN         "Reconnect"
 #define CLOUD_TEXT_GN						"Cloud"
 #define CLOUD_BIND_GN						"Bind"
 #define CLOUD_UNBIND_GN						"Unbind"
@@ -1686,7 +2072,7 @@ extern tool_menu_def tool_menu;
 #define LANGUAGE_TEXT_FR				"Langue"
 #define MOTOR_OFF_TEXT_FR				"M-hors"
 #define SHUTDOWN_TEXT_FR				"Eteindre"
-
+#define MACHINE_PARA_FR					"Config"
 #define U_DISK_TEXT_FR					"Clé usb"
 #define SD_CARD_TEXT_FR					"Carte SD"
 #define WIFI_NAME_TEXT_FR				"WiFi: "
@@ -1697,6 +2083,7 @@ extern tool_menu_def tool_menu;
 #define WIFI_CONNECTED_TEXT_FR			"Connecté"
 #define WIFI_DISCONNECTED_TEXT_FR		"Déconnecté"
 #define WIFI_EXCEPTION_TEXT_FR			"Exception"
+#define WIFI_RECONNECT_TEXT_FR         "Reconnect"
 #define CLOUD_TEXT_FR					"Cloud"
 #define CLOUD_BIND_FR					"Lié"
 #define CLOUD_UNBIND_FR					"Délier"
@@ -1841,7 +2228,7 @@ extern tool_menu_def tool_menu;
 #define DIALOG_ERROR_TIPS2_FR			"Erreur:La opération a échoué. \nVerifiez que le baudrate de l'écran et de \nla carte mère soient identique!"
 #define DIALOG_ERROR_TIPS3_FR		    "Erreur: le nom du fichier ou le \nchemin d'accès est trop long."
 #define DIALOG_UNBIND_PRINTER_FR        "Unbind the printer?"
-
+#define DIALOG_WIFI_ENABLE_TIPS_FR "The wifi module is being configured,\nplease wait a moment....."
 #define CALIBRATE_FR  "Calibrate"
 //****************俄语***************************//
 #define TOOL_TEXT_RU		    "инструмент"
@@ -1919,6 +2306,7 @@ extern tool_menu_def tool_menu;
 #define LANGUAGE_TEXT_RU					"язык"
 #define MOTOR_OFF_TEXT_RU					"отклмотор"
 #define SHUTDOWN_TEXT_RU					"выключение"
+#define MACHINE_PARA_RU                     "Config"
 
 #define U_DISK_TEXT_RU						"U диск"
 #define SD_CARD_TEXT_RU						"SD диск"
@@ -1930,6 +2318,7 @@ extern tool_menu_def tool_menu;
 #define WIFI_CONNECTED_TEXT_RU				"подключен"
 #define WIFI_DISCONNECTED_TEXT_RU			"не подключен"
 #define WIFI_EXCEPTION_TEXT_RU				"исключение"
+#define WIFI_RECONNECT_TEXT_RU         "Reconnect"
 #define CLOUD_TEXT_RU						"облако"
 #define CLOUD_BIND_RU						"соединён"
 #define CLOUD_UNBIND_RU						"не соединён"
@@ -2071,7 +2460,7 @@ extern tool_menu_def tool_menu;
 #define DIALOG_ERROR_TIPS3_RU				"ошибка: имя файла слишком длинное!"
 #define DIALOG_CLOSE_MACHINE_RU             "Closing machine......"
 #define DIALOG_UNBIND_PRINTER_RU            "Unbind the printer?"
-
+#define DIALOG_WIFI_ENABLE_TIPS_RU "The wifi module is being configured,\nplease wait a moment....."
 #define CALIBRATE_RU  "Calibrate"
 //****************西班牙语***************************
 #define TOOL_TEXT_SP		    "Ajustes"
@@ -2149,7 +2538,7 @@ extern tool_menu_def tool_menu;
 #define LANGUAGE_TEXT_SP				"Language"
 #define MOTOR_OFF_TEXT_SP				"Apagar motor"
 #define SHUTDOWN_TEXT_SP				"Apagar"
-
+#define MACHINE_PARA_SP                 "Config"
 #define U_DISK_TEXT_SP					"PENDRIVE"
 #define SD_CARD_TEXT_SP					"SD"
 #define WIFI_NAME_TEXT_SP				"WIFI: "
@@ -2160,6 +2549,7 @@ extern tool_menu_def tool_menu;
 #define WIFI_CONNECTED_TEXT_SP				"Conectado"
 #define WIFI_DISCONNECTED_TEXT_SP			"Desconectado"
 #define WIFI_EXCEPTION_TEXT_SP				"Excepción"
+#define WIFI_RECONNECT_TEXT_SP         "Reconnect"
 #define CLOUD_TEXT_SP						"Nube"
 #define CLOUD_BIND_SP						"Atado"
 #define CLOUD_UNBIND_SP					    "Sin atar"
@@ -2304,7 +2694,7 @@ extern tool_menu_def tool_menu;
 #define DIALOG_ERROR_TIPS3_SP				"Error : nombre de archivo o \nruta demasiado largo!"
 #define DIALOG_CLOSE_MACHINE_SP             "Closing machine......"
 #define DIALOG_UNBIND_PRINTER_SP            "Unbind the printer?"
-
+#define DIALOG_WIFI_ENABLE_TIPS_SP "The wifi module is being configured,\nplease wait a moment....."
 #define CALIBRATE_SP  "Calibrate"
 
 #if 0
@@ -2402,6 +2792,7 @@ extern tool_menu_def tool_menu;
 #define CLOUD_UNBINDED_GR						"Unbinded"
 #define CLOUD_BINDED_GR							"Binded"
 #define CLOUD_DISABLE_GR						"Disable"
+#define WIFI_RECONNECT_TEXT_GR         "Reconnect"
 
 #define FAN_ADD_TEXT_GR								"ADD"
 #define FAN_DEC_TEXT_GR								"DEC"
@@ -2670,7 +3061,7 @@ extern tool_menu_def tool_menu;
 #define DIALOG_ERROR_TIPS3_TU								"error:file name or path is too long!"
 #define DIALOG_CLOSE_MACHINE_TU             "Closing machine......"
 #define DIALOG_UNBIND_PRINTER_TU            "Unbind the printer?"
-
+#define DIALOG_WIFI_ENABLE_TIPS_TU "The wifi module is being configured,\nplease wait a moment....."
 #define CALIBRATE_TU  "Calibrate"
 //****************韩语***************************//
 #define TOOL_TEXT_KR		"Tool"
@@ -2931,7 +3322,7 @@ extern tool_menu_def tool_menu;
 #define LANGUAGE_TEXT_IT					"Lingua"
 #define MOTOR_OFF_TEXT_IT					"Motor off"
 #define SHUTDOWN_TEXT_IT					"Spento"
-
+#define MACHINE_PARA_IT                     "Config"
 #define U_DISK_TEXT_IT						"USB"
 #define SD_CARD_TEXT_IT						"SD"
 #define WIFI_NAME_TEXT_IT					"WIFI: "
@@ -2942,6 +3333,7 @@ extern tool_menu_def tool_menu;
 #define WIFI_CONNECTED_TEXT_IT				"Connesso"
 #define WIFI_DISCONNECTED_TEXT_IT			"Disconnesso"
 #define WIFI_EXCEPTION_TEXT_IT				"Eccezione"
+#define WIFI_RECONNECT_TEXT_IT         "Reconnect"
 #define CLOUD_TEXT_IT						"Cloud"
 #define CLOUD_BIND_IT						"Legato"
 #define CLOUD_UNBIND_IT						"Libero"
@@ -3082,7 +3474,7 @@ extern tool_menu_def tool_menu;
 #define DIALOG_ERROR_TIPS3_IT			"Errore: il nome del file o il \npercorso è troppo lungo!"
 #define DIALOG_CLOSE_MACHINE_IT                 "Closing machine......"
 #define DIALOG_UNBIND_PRINTER_IT                "Unbind the printer?"
-
+#define DIALOG_WIFI_ENABLE_TIPS_IT "The wifi module is being configured,\nplease wait a moment....."
 #define CALIBRATE_IT  "Calibrate"
 
 /*****************************************/

@@ -108,7 +108,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 
-/* USER CODE BEGIN PV */
+/* USER CODE BEGIN PV */ 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE END PV */
@@ -166,6 +166,30 @@ uint8_t preview_no_display;
 
 /* USER CODE END 0 */
 
+uint8_t console_msg_print[128];
+uint8_t lineNumber = 0;
+uint8_t console_flag = 0;
+uint8_t update_msg_flag = 0;
+
+#if 1
+  void console_show()
+  {
+		char buf[480] ={0};
+		memset((void *)buf,' ',sizeof(buf));
+		if(++lineNumber>=14)
+			lineNumber = 0;
+		GUI_DispStringAt((char const *)buf, TITLE_XPOS, lineNumber*20);
+		GUI_DispStringAt((char const *)console_msg_print, TITLE_XPOS, lineNumber*20);
+	 	GUI_DispStringAt("Touch To Back",200,300);
+  }
+  void console_back()
+  {
+	 clear_cur_ui();
+	 disp_state_stack._disp_index += 1;
+	 draw_return_ui();	  
+  }
+  
+#endif
 
   int main(void)
 {
@@ -580,7 +604,30 @@ uint8_t preview_no_display;
 			
   			if(wifi_link_state != WIFI_TRANS_FILE)
   			{
-				GUI_RefreshPage();
+  				//console 
+  				switch(console_flag)
+                {
+                    case 1:
+                      console_show(); 
+                      console_flag=3;
+                        break;
+                    case 2:
+                      console_back();  
+                      console_flag=0;
+					 lineNumber = 0;
+                        break;
+					case 3:
+						if(update_msg_flag == 1)
+						{
+							update_msg_flag = 0;
+							console_show();  
+						}
+                        break;
+                    default:break;
+                }    
+	            if (console_flag != 3 )
+						GUI_RefreshPage();
+//				GUI_RefreshPage();
   			}
 			
 			mksUsart2Polling();
@@ -906,6 +953,7 @@ void SysTick_Handler_User()
 			}
 			
 		}
+		
 		if(wifi_refresh_flg == 0)
 			wifi_refresh_flg = 1;
 		
@@ -1001,7 +1049,19 @@ void SysTick_Handler_User()
 	}
 	
     #endif
-	
+	//lan
+	if(key_value_calc.timer == TIMER_START)
+	{
+		key_value_calc.timer_count++;
+	}
+	if(((TimeIncrease * TICK_CYCLE % 1000) == 0) )
+	{		
+		if(tips_disp.timer == TIPS_TIMER_START)
+		{
+			tips_disp.timer_count++;
+		}
+	}
+
 	if(T_CNT != 0) 
 	{
 		T_CNT--;
@@ -1212,6 +1272,15 @@ uint8_t  DecStr2Int(int8_t * buf,  int  *result)
 uint8_t temp_update_flag = 0;
 uint8_t FanSpeed_bak = 0;
 uint8_t fan_change_flag = 0;
+uint8_t step_update_flag = 0;
+uint8_t current_update_flag = 0;
+uint8_t maxFR_update_flag = 0;
+uint8_t accel_update_flag = 0;
+
+uint8_t sensivisity_update =0;
+uint8_t probeOffset_update =0;
+uint8_t saveSuccess_flag =0;
+
 static uint8_t get_temper_flg = 0;
 extern char cmd_code[201];
 
@@ -1221,15 +1290,18 @@ void get_cmd_ack()
 	int8_t *tmpStr = 0;
 	int8_t *tmpStr_Line = 0;
 	int8_t *tmpStr_e = 0;
+	int8_t *tmpStr_step = 0;
 	
 	float  tmpTemp = 0;
+	float tmpStep = 0;
+	uint16_t tmpCurrent = 0;
 	int8_t rcv_ack_flag = 0;
 	int32_t i, j, k;
 	int8_t inc_flag = 0;
 	int8_t num_valid = 0;
 	int8_t cmdRxBuf[128] = {0};
 	int8_t  tempBuf[100] = {0};
-	
+	int16_t tmpSensitive = 0;
 	memset(cmdRxBuf, 0, sizeof(cmdRxBuf));
 
 	if(popFIFO(&gcodeCmdRxFIFO,  (unsigned char *)cmdRxBuf) == fifo_ok)
@@ -1237,11 +1309,30 @@ void get_cmd_ack()
 		link_mutex_detect_time = 0;
 		get_temper_flg = 0;
 		i = 0;
+
+		update_msg_flag=1;
+		memset((char *)console_msg_print,0,sizeof(console_msg_print));
+		strcpy((char *)console_msg_print,(const char *)cmdRxBuf);
+		
 		tmpStr = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"Printer stopped due to errors");
 		if(tmpStr)
 		{
 		
 		}
+		//lan
+		tmpStr = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"Settings Stored");
+		if(tmpStr)
+		{
+				memset((char *)cmd_code,0,sizeof(cmd_code));
+				strcpy((char *)cmd_code,(const char *)cmdRxBuf);
+				if(console_flag!=3)
+				{
+					if(disp_state != DIALOG_UI)
+					clear_cur_ui();
+					draw_dialog(DIALOG_TYPE_M500_SUCCESS);
+				}
+		}
+		
 		#if 1
 		if(gCfgItems.display_error != 0)
 		{
@@ -1629,7 +1720,6 @@ void get_cmd_ack()
 									} 										
 									temp_update_flag = 1;
 								}
-		
 							}
 						}
 					}
@@ -1776,6 +1866,984 @@ void get_cmd_ack()
 					}
 				}
 			}
+
+			tmpStr = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M92 X");
+			if( tmpStr)
+			{
+
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 5; tmpStr[j] != ' '; j++)
+				{
+					
+					if(tmpStr[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr[j];
+					num_valid = 1;
+					k++;
+					
+				}
+				if(num_valid)
+				{
+					if(DecStr2Float(tempBuf, &tmpStep)	 !=   0)
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.xStep = tmpStep;
+						}
+					}
+				}
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"Y");
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 1; tmpStr_step[j] != ' '; j++)
+				{
+					
+					if(tmpStr_step[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr_step[j];
+					num_valid = 1;
+					k++;
+					
+				}
+				if(num_valid)
+				{
+					if(DecStr2Float(tempBuf, &tmpStep)	 !=   0)
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.yStep = tmpStep;
+						}
+					}
+				}	
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"Z");
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 1; tmpStr_step[j] != ' '; j++)
+				{
+					
+					if(tmpStr[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr_step[j];
+					num_valid = 1;
+					k++;
+				}
+				if(num_valid)
+				{
+					if(DecStr2Float(tempBuf, &tmpStep)	 !=   0)
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.zStep = tmpStep;
+						}
+					}
+				}
+				if (gCfgItems.sprayerNum ==1)
+				{
+					tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"E");
+					memset(tempBuf, 0, sizeof(tempBuf));
+					k = 0;
+					num_valid = 0;
+					for(j = 1; tmpStr_step[j] != ' '; j++)
+					{
+						
+						if(tmpStr_step[j] == '\n')
+						{
+							break;
+						}
+						
+						tempBuf[k] = tmpStr_step[j];
+						num_valid = 1;
+						k++;
+						
+					}
+					if(num_valid)
+					{
+						if(DecStr2Float(tempBuf, &tmpStep)	 !=   0)
+						{
+							//if((int)tmpTemp != 0)
+							{
+								gCfgItems.e0Step = tmpStep;
+							}
+						}
+					}	
+				}
+				
+				step_update_flag = 1;
+			}
+			if(gCfgItems.sprayerNum !=1)
+				{
+						tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M92 T0 E");
+						if(tmpStr_step)
+						{
+							memset(tempBuf, 0, sizeof(tempBuf));
+							k = 0;
+							num_valid = 0;
+							for(j = 8; tmpStr_step[j] != ' '; j++)
+							{
+								
+								if(tmpStr_step[j] == '\n')
+								{
+									break;
+								}
+								
+								tempBuf[k] = tmpStr_step[j];
+								num_valid = 1;
+								k++;
+								
+							}
+							if(num_valid)
+							{
+								if(DecStr2Float(tempBuf, &tmpStep)	 !=   0)
+								{
+									//if((int)tmpTemp != 0)
+									{
+										gCfgItems.e0Step = tmpStep;
+									}
+								}
+							}	
+						}
+						tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M92 T1 E");
+						if(tmpStr_step)
+						{
+							memset(tempBuf, 0, sizeof(tempBuf));
+							k = 0;
+							num_valid = 0;
+							for(j = 8; tmpStr_step[j] != '\n'; j++)
+							{
+								
+								if(tmpStr_step[j] == '\0')
+								{
+									break;
+								}
+								
+								tempBuf[k] = tmpStr_step[j];
+								num_valid = 1;
+								k++;
+								
+							}
+							if(num_valid)
+							{
+								if(DecStr2Float(tempBuf, &tmpStep)	 !=   0)
+								{
+									//if((int)tmpTemp != 0)
+									{
+										gCfgItems.e1Step = tmpStep;
+									}
+								}
+							}	
+						}
+						step_update_flag = 1;
+				}
+/*************************M201***************************************/
+			tmpStr = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M201 X");
+			if( tmpStr)
+			{
+
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 6; tmpStr[j] != ' '; j++)
+				{
+					
+					if(tmpStr[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr[j];
+					num_valid = 1;
+					k++;
+					
+				}
+				if(num_valid)
+				{
+//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+					tmpCurrent = atoi((const char *)tempBuf);
+
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.xMaxAccel = tmpCurrent;
+						}
+					}
+				}
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"Y");
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 1; tmpStr_step[j] != ' '; j++)
+				{
+					
+					if(tmpStr_step[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr_step[j];
+					num_valid = 1;
+					k++;
+					
+				}
+				if(num_valid)
+				{
+//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+					tmpCurrent = atoi((const char *)tempBuf);
+
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.yMaxAccel = tmpCurrent;
+						}
+					}
+				}	
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"Z");
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 1; tmpStr_step[j] != ' '; j++)
+				{
+					
+					if(tmpStr[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr_step[j];
+					num_valid = 1;
+					k++;
+				}
+				if(num_valid)
+				{
+//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+					tmpCurrent = atoi((const char *)tempBuf);
+
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.zMaxAccel= tmpCurrent;
+						}
+					}
+				}
+				if (gCfgItems.sprayerNum ==1)
+				{
+					tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"E");
+					memset(tempBuf, 0, sizeof(tempBuf));
+					k = 0;
+					num_valid = 0;
+					for(j = 1; tmpStr_step[j] != ' '; j++)
+					{
+						
+						if(tmpStr_step[j] == '\n')
+						{
+							break;
+						}
+						
+						tempBuf[k] = tmpStr_step[j];
+						num_valid = 1;
+						k++;
+						
+					}
+					if(num_valid)
+					{
+//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+					tmpCurrent = atoi((const char *)tempBuf);
+
+						{
+							//if((int)tmpTemp != 0)
+							{
+								gCfgItems.e0_MaxAccel = tmpCurrent;
+							}
+						}
+					}	
+				}
+				accel_update_flag = 1;
+			}		
+			if (gCfgItems.sprayerNum !=1)
+			{
+				
+				tmpStr = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M201 T0 E");
+				if( tmpStr)
+				{
+
+					memset(tempBuf, 0, sizeof(tempBuf));
+					k = 0;
+					num_valid = 0;
+					for(j = 9; tmpStr[j] != ' '; j++)
+					{
+						
+						if(tmpStr[j] == '\0')
+						{
+							break;
+						}
+						
+						tempBuf[k] = tmpStr[j];
+						num_valid = 1;
+						k++;
+						
+					}
+					if(num_valid)
+					{
+	//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+						tmpCurrent = atoi((const char *)tempBuf);
+
+						{
+							//if((int)tmpTemp != 0)
+							{
+								gCfgItems.e0_MaxAccel = tmpCurrent;
+							}
+						}
+					}
+				}
+				tmpStr = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M201 T1 E");
+				if( tmpStr)
+				{
+
+					memset(tempBuf, 0, sizeof(tempBuf));
+					k = 0;
+					num_valid = 0;
+					for(j = 9; tmpStr[j] != ' '; j++)
+					{
+						
+						if(tmpStr[j] == '\0')
+						{
+							break;
+						}
+						
+						tempBuf[k] = tmpStr[j];
+						num_valid = 1;
+						k++;
+						
+					}
+					if(num_valid)
+					{
+	//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+						tmpCurrent = atoi((const char *)tempBuf);
+
+						{
+							//if((int)tmpTemp != 0)
+							{
+								gCfgItems.e1_MaxAccel = tmpCurrent;
+							}
+						}
+					}	
+				}
+				accel_update_flag = 1;
+			}
+		/**************************M203***************************************/
+		tmpStr = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M203 X");
+		if( tmpStr)
+		{
+
+			memset(tempBuf, 0, sizeof(tempBuf));
+			k = 0;
+			num_valid = 0;
+			for(j = 6; tmpStr[j] != ' '; j++)
+			{
+				
+				if(tmpStr[j] == '\0')
+				{
+					break;
+				}
+				
+				tempBuf[k] = tmpStr[j];
+				num_valid = 1;
+				k++;
+				
+			}
+			if(num_valid)
+			{
+				tmpCurrent = atoi((const char *)tempBuf);
+				gCfgItems.xMaxFeedRate= tmpCurrent;
+			}
+			tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"Y");
+			memset(tempBuf, 0, sizeof(tempBuf));
+			k = 0;
+			num_valid = 0;
+			for(j = 1; tmpStr_step[j] != ' '; j++)
+			{
+				
+				if(tmpStr_step[j] == '\0')
+				{
+					break;
+				}
+				
+				tempBuf[k] = tmpStr_step[j];
+				num_valid = 1;
+				k++;
+				
+			}
+			if(num_valid)
+			{
+				tmpCurrent = atoi((const char *)tempBuf);
+				gCfgItems.yMaxFeedRate = tmpCurrent;
+			}	
+			tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"Z");
+			memset(tempBuf, 0, sizeof(tempBuf));
+			k = 0;
+			num_valid = 0;
+			for(j = 1; tmpStr_step[j] != '\n'; j++)
+			{
+				
+				if(tmpStr[j] == '\0')
+				{
+					break;
+				}
+				tempBuf[k] = tmpStr_step[j];
+				num_valid = 1;
+				k++;
+			}
+			if(num_valid)
+			{
+				tmpCurrent = atoi((const char *)tempBuf);
+				gCfgItems.zMaxFeedRate= tmpCurrent;
+			}
+			if (gCfgItems.sprayerNum ==1)
+			{
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"E");
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 1; tmpStr_step[j] != ' '; j++)
+				{
+					if(tmpStr_step[j] == '\0')
+					{
+						break;
+					}
+					tempBuf[k] = tmpStr_step[j];
+					num_valid = 1;
+					k++;	
+				}
+				if(num_valid)
+				{
+					tmpCurrent = atoi((const char *)tempBuf);
+					gCfgItems.e0_MaxFeedRate = tmpCurrent;
+				}			
+			}	
+			maxFR_update_flag = 1;
+		}
+		if (gCfgItems.sprayerNum !=1)
+		{
+			tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M203 T0 E");
+			if(tmpStr_step)
+			{
+					memset(tempBuf, 0, sizeof(tempBuf));
+					k = 0;
+					num_valid = 0;
+					for(j = 9; tmpStr_step[j] != ' '; j++)
+					{
+						
+						if(tmpStr_step[j] == '\0')
+						{
+							break;
+						}
+						
+						tempBuf[k] = tmpStr_step[j];
+						num_valid = 1;
+						k++;
+						
+					}
+					if(num_valid)
+					{
+	//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+						tmpCurrent = atoi((const char *)tempBuf);
+
+						{
+							//if((int)tmpTemp != 0)
+							{
+								gCfgItems.e0_MaxFeedRate = tmpCurrent;
+							}
+						}
+					}	
+			}
+			tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M203 T1 E");
+			if(tmpStr_step)
+			{
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 9; tmpStr_step[j] != ' '; j++)
+				{
+					
+					if(tmpStr_step[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr_step[j];
+					num_valid = 1;
+					k++;
+					
+				}
+				if(num_valid)
+				{
+					tmpCurrent = atoi((const char *)tempBuf);
+					gCfgItems.e1_MaxFeedRate = tmpCurrent;
+				}	
+			}
+			maxFR_update_flag = 1;
+		}
+				
+				/**********************M204************/			
+			tmpStr = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M204 P");
+			if( tmpStr)
+			{
+
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 6; tmpStr[j] != ' '; j++)
+				{
+					
+					if(tmpStr[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr[j];
+					num_valid = 1;
+					k++;
+					
+				}
+				if(num_valid)
+				{
+//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+					tmpCurrent = atoi((const char *)tempBuf);
+
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.printAccel = tmpCurrent;
+						}
+					}
+				}
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"R");
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 1; tmpStr_step[j] != ' '; j++)
+				{
+					
+					if(tmpStr_step[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr_step[j];
+					num_valid = 1;
+					k++;
+					
+				}
+				if(num_valid)
+				{
+//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+					tmpCurrent = atoi((const char *)tempBuf);
+
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.retractAccel = tmpCurrent;
+						}
+					}
+				}	
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"T");
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 1; tmpStr_step[j] != ' '; j++)
+				{
+					
+					if(tmpStr[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr_step[j];
+					num_valid = 1;
+					k++;
+				}
+				if(num_valid)
+				{
+//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+					tmpCurrent = atoi((const char *)tempBuf);
+
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.travelAccel= tmpCurrent;
+						}
+					}
+				}
+				accel_update_flag = 1;
+			}	
+			
+/***********************M851********************************/
+			tmpStr = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M851 X");
+			if( tmpStr)
+			{
+
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 6; tmpStr[j] != ' '; j++)
+				{
+					
+					if(tmpStr[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr[j];
+					num_valid = 1;
+					k++;
+					
+				}
+				if(num_valid)
+				{
+						if(DecStr2Float(tempBuf, &tmpTemp)  !=   0)
+
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.xProbeOffset = tmpTemp;
+						}
+					}
+				}
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"Y");
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 1; tmpStr_step[j] != ' '; j++)
+				{
+					
+					if(tmpStr_step[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr_step[j];
+					num_valid = 1;
+					k++;
+					
+				}
+				if(num_valid)
+				{
+						if(DecStr2Float(tempBuf, &tmpTemp)  !=   0)
+
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.yProbeOffset = tmpTemp;
+						}
+					}
+				}	
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"Z");
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 1; tmpStr_step[j] != ' '; j++)
+				{
+					
+					if(tmpStr[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr_step[j];
+					num_valid = 1;
+					k++;
+				}
+				if(num_valid)
+				{
+						if(DecStr2Float(tempBuf, &tmpTemp)  !=   0)
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.zProbeOffset= tmpTemp;
+						}
+					}
+				}
+				probeOffset_update = 1;
+			}			
+/***********************M914********************************/
+			tmpStr = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M914 X");
+			if( tmpStr)
+			{
+
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 6; tmpStr[j] != ' '; j++)
+				{
+					
+					if(tmpStr[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr[j];
+					num_valid = 1;
+					k++;
+					
+				}
+				if(num_valid)
+				{
+//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+					tmpSensitive = atoi((const char *)tempBuf);
+
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.xSensivisity = tmpSensitive;
+						}
+					}
+				}
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"Y");
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 1; tmpStr_step[j] != ' '; j++)
+				{
+					
+					if(tmpStr_step[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr_step[j];
+					num_valid = 1;
+					k++;
+					
+				}
+				if(num_valid)
+				{
+//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+					tmpSensitive = atoi((const char *)tempBuf);
+
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.ySensivisity = tmpSensitive;
+						}
+					}
+				}	
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"Z");
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 1; tmpStr_step[j] != ' '; j++)
+				{
+					
+					if(tmpStr[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr_step[j];
+					num_valid = 1;
+					k++;
+				}
+				if(num_valid)
+				{
+//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+					tmpSensitive = atoi((const char *)tempBuf);
+
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.zSensivisity= tmpSensitive;
+						}
+					}
+				}
+				sensivisity_update = 1;
+			}			
+
+			
+/**********************M906*****************************/
+			tmpStr = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M906 X");
+			if( tmpStr)
+			{
+
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 6; tmpStr[j] != ' '; j++)
+				{
+					
+					if(tmpStr[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr[j];
+					num_valid = 1;
+					k++;
+					
+				}
+				if(num_valid)
+				{
+//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+					tmpCurrent = atoi((const char *)tempBuf);
+
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.xCurrent = tmpCurrent;
+						}
+					}
+				}
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"Y");
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 1; tmpStr_step[j] != ' '; j++)
+				{
+					
+					if(tmpStr_step[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr_step[j];
+					num_valid = 1;
+					k++;
+					
+				}
+				if(num_valid)
+				{
+//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+					tmpCurrent = atoi((const char *)tempBuf);
+
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.yCurrent = tmpCurrent;
+						}
+					}
+				}	
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"Z");
+				memset(tempBuf, 0, sizeof(tempBuf));
+				k = 0;
+				num_valid = 0;
+				for(j = 1; tmpStr_step[j] != ' '; j++)
+				{
+					
+					if(tmpStr[j] == '\0')
+					{
+						break;
+					}
+					
+					tempBuf[k] = tmpStr_step[j];
+					num_valid = 1;
+					k++;
+				}
+				if(num_valid)
+				{
+//						if(DecStr2Int(tempBuf, &tmpCurrent)  !=   0)
+					tmpCurrent = atoi((const char *)tempBuf);
+
+					{
+						//if((int)tmpTemp != 0)
+						{
+							gCfgItems.zCurrent = tmpCurrent;
+						}
+					}
+				}
+//				if (gCfgItems.sprayerNum ==1)
+//				{
+//					tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"E");
+//					memset(tempBuf, 0, sizeof(tempBuf));
+//					k = 0;
+//					num_valid = 0;
+//					for(j = 1; tmpStr_step[j] != ' '; j++)
+//					{
+//						
+//						if(tmpStr_step[j] == '\0')
+//						{
+//							break;
+//						}
+//						
+//						tempBuf[k] = tmpStr_step[j];
+//						num_valid = 1;
+//						k++;
+//						
+//					}
+//					if(num_valid)
+//					{
+//						tmpCurrent = atoi((const char *)tempBuf);
+//						gCfgItems.e0Current = tmpCurrent;
+//					}	
+//				}
+				current_update_flag = 1;
+			}
+//			if(gCfgItems.sprayerNum != 1)
+			{
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M906 T0 E");
+				if (tmpStr_step)
+				{
+					memset(tempBuf, 0, sizeof(tempBuf));
+					k = 0;
+					num_valid = 0;
+					for(j = 9; tmpStr_step[j] != ' '; j++)
+					{
+						
+						if(tmpStr_step[j] == '\0')
+						{
+							break;
+						}
+						
+						tempBuf[k] = tmpStr_step[j];
+						num_valid = 1;
+						k++;
+						
+					}
+					if(num_valid)
+					{
+						tmpCurrent = atoi((const char *)tempBuf);
+						gCfgItems.e0Current = tmpCurrent;
+					}
+					current_update_flag = 1;			
+				}
+				tmpStr_step = (int8_t *)strstr((const char *)&cmdRxBuf[i], (const char *)"M906 T1 E");
+				if (tmpStr_step)
+				{
+					memset(tempBuf, 0, sizeof(tempBuf));
+					k = 0;
+					num_valid = 0;
+					for(j = 9; tmpStr_step[j] != ' '; j++)
+					{
+						
+						if(tmpStr_step[j] == '\0')
+						{
+							break;
+						}
+						
+						tempBuf[k] = tmpStr_step[j];
+						num_valid = 1;
+						k++;
+						
+					}
+					if(num_valid)
+					{
+						tmpCurrent = atoi((const char *)tempBuf);
+						gCfgItems.e1Current = tmpCurrent;
+					}
+					current_update_flag = 1;			
+				}				
+			}
+			
 		}
 }
 
@@ -2148,6 +3216,7 @@ void PowerOff_Filament_Check()
 		}
 	}
 	//断电检测
+	// PB0 as second  filament checking interface 
 	if((printerStaus == pr_working)&&(gCfgItems.mask_PB0_PB1_Function!=1))//打印中则进入暂停界面
 	{
 		if(gCfgItems.filament_det2_level_flg == 1)//断料接口接入电平为高电平触发时的处理
@@ -2160,7 +3229,7 @@ void PowerOff_Filament_Check()
 			
 			if(filament_det2_low_cnt >= 2000)// 2s
 			{
-        if(PW_PORT_READ == 1)
+	        if(PW_PORT_READ == 1)
 				{
 					filament_det2_high_flg = 1;
 					filament_det2_check=1;
@@ -2190,11 +3259,14 @@ void PowerOff_Filament_Check()
 						stop_print_time();
 						printerStaus = pr_pause;
 						//draw_pause();
-						if(from_flash_pic==1)
-							flash_preview_begin = 1;
-						else
-							default_preview_flg = 1;						
-						draw_printing();
+//						if(from_flash_pic==1)
+//							flash_preview_begin = 1;
+//						else
+//							default_preview_flg = 1;	
+						//lan
+//						draw_printing();
+						draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);
+						
 						mksBpAlrmEn = 1;
 
 						return;		
@@ -2227,11 +3299,14 @@ void PowerOff_Filament_Check()
 						stop_print_time();
 						printerStaus = pr_pause;
 						//draw_pause();
-						if(from_flash_pic==1)
-							flash_preview_begin = 1;
-						else
-							default_preview_flg = 1;						
-						draw_printing();
+//						if(from_flash_pic==1)
+//							flash_preview_begin = 1;
+//						else
+//							default_preview_flg = 1;	
+						//lan
+//						draw_printing();
+						draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);
+
 						mksBpAlrmEn = 1;
 
 						return;				
@@ -2288,11 +3363,13 @@ void PowerOff_Filament_Check()
 						stop_print_time();
 						printerStaus = pr_pause;
 						//draw_pause();
-						if(from_flash_pic==1)
-							flash_preview_begin = 1;
-						else
-							default_preview_flg = 1;						
-						draw_printing();
+//						if(from_flash_pic==1)
+//							flash_preview_begin = 1;
+//						else
+//							default_preview_flg = 1;	
+						//lan
+//						draw_printing();
+						draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);
 						mksBpAlrmEn = 1;
 
 						return;		
@@ -2325,13 +3402,15 @@ void PowerOff_Filament_Check()
 						stop_print_time();
 						printerStaus = pr_pause;
 						//draw_pause();
-						if(from_flash_pic==1)
-							flash_preview_begin = 1;
-						else
-							default_preview_flg = 1;						
-						draw_printing();
-						mksBpAlrmEn = 1;
+//						if(from_flash_pic==1)
+//							flash_preview_begin = 1;
+//						else
+//							default_preview_flg = 1;						
+						//lan
+//						draw_printing();
+						draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);
 
+						mksBpAlrmEn = 1;
 						return;				
 					}
 				}

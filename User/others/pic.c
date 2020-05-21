@@ -8,7 +8,7 @@
 #define NULL    0
 #endif
 
-
+#if 0				//lan
 //**unsigned char bmp_public_buf[16 * 1024] = {0};
 unsigned char bmp_public_buf[32* 1024] = {0};
 #if defined(TFT70)
@@ -46,6 +46,8 @@ GUI_BITMAP bmp_struct = {
   NULL  /* Pointer to palette */
  ,GUI_DRAW_BMPM565
 };
+#endif
+#if 0
 GUI_BITMAP bmp_struct_92 = {
   117,
   92,
@@ -86,10 +88,178 @@ GUI_BITMAP bmp_struct_150 = {
 
 
 #endif
+//lan
+//FIL TEST_FIL;
+#else
+unsigned char bmp_public_buf[32 * 1024] = {0};
 
+GUI_BITMAP bmp_struct = {
+  117,
+  35,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
 
+GUI_BITMAP bmp_struct10x17 = {
+  10,
+  17,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+
+GUI_BITMAP bmp_struct70X40 = {
+  70,
+  40,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+GUI_BITMAP bmp_struct90X30 = {
+  90,
+  30,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+
+GUI_BITMAP bmp_struct70X28 = {
+  70,
+  28,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+
+GUI_BITMAP bmp_struct90X40 = {
+  90,
+  40,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+GUI_BITMAP bmp_struct68X40 = {
+  68,
+  40,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+GUI_BITMAP bmp_struct68X90 = {
+  68,
+  20,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+
+GUI_BITMAP bmp_struct144X40 = {
+  144,
+  10,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+
+GUI_BITMAP bmp_struct26X26 = {
+  26,
+  26,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+
+GUI_BITMAP bmp_struct_92 = {
+  117,
+  23,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+#if 1
+GUI_BITMAP bmp_struct_50 = {
+  45,
+  45,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+
+GUI_BITMAP bmp_struct_100 = {
+  100,
+  100,//lan
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+
+GUI_BITMAP bmp_struct_150 = {
+  150,
+  20,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+GUI_BITMAP bmp_struct_117x25 = {
+  50,
+  50,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+GUI_BITMAP bmp_struct_50x50 = {
+  50,
+  50,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+GUI_BITMAP bmp_struct_141x60 = {
+  140,
+  15,
+  160, /* BytesPerLine */
+  16, /* BitsPerPixel */
+  (unsigned char *)bmp_public_buf,  /* Pointer to picture data */
+  NULL  /* Pointer to palette */
+ ,GUI_DRAW_BMPM565
+};
+#endif
 FIL TEST_FIL;
 
+#endif
 int ascii2dec_test(char *ascii)
 {
 	int result = 0;

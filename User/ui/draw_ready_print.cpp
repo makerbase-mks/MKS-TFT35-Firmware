@@ -22,7 +22,7 @@
 #include "draw_manual_leveling.h"
 #include "sd_usr.h"
 #include "draw_tool.h"
-
+#include "draw_disk.h"
 #ifndef GUI_FLASH
 #define GUI_FLASH
 #endif
@@ -81,10 +81,11 @@ static void cbReadPrintWin(WM_MESSAGE * pMsg) {
 			{
 				if(pMsg->hWinSrc == buttonPrint.btnHandle)
 				{
-					disp_in_file_dir = 1;
+//					disp_in_file_dir = 1;
 					last_disp_state = PRINT_READY_UI;
 					Clear_ready_print();
-					draw_print_file();      //printing 按键 入口
+//					draw_print_file();      //printing 按键 入口
+					draw_Disk();
 				}
 				else if(pMsg->hWinSrc == buttonMove.btnHandle)
 				{
@@ -302,6 +303,17 @@ void draw_ready_print()
 void draw_ready_print()
 {
 	int i;
+
+	buttonPreHeat.btnHandle = 0; 
+	buttonPrint.btnHandle = 0; 
+	buttonExtruder.btnHandle = 0; 
+	buttonMove.btnHandle = 0; 
+	buttonFan.btnHandle = 0; 
+	buttonMore.btnHandle = 0; 
+	buttonZero.btnHandle = 0; 
+	buttonSet.btnHandle = 0;
+	buttonLeveling.btnHandle = 0;
+	buttonTool.btnHandle = 0;
 
 	disp_state_stack._disp_index = 0;
 	memset(disp_state_stack._disp_state, 0, sizeof(disp_state_stack._disp_state));

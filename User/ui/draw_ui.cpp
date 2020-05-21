@@ -48,14 +48,25 @@
 #include "draw_disk.h"
 #include "draw_zoffset.h"
 #include "draw_tool.h"
+//#include "draw_machine.h"
+//#include "draw_keyboard.h"
 #include "draw_babyStep.h"
 
+#include "draw_wifi_list.h"
+#include "draw_Tips.h"
+#include "wifi_module.h"
+
+value_state value;
+value_type valueType;
+
+uint8_t gcodeSet_flag = 0;
 extern volatile int16_t logo_time;
 extern PR_STATUS printerStaus;
 extern uint8_t temp_update_flag;
-
+extern uint8_t step_update_flag;
 extern uint8_t print_start_flg;
 extern uint8_t from_flash_pic;
+extern uint8_t probeOffset_update;
 /******end********/
 extern GUI_FLASH const GUI_FONT GUI_FontHZ_fontHz14;
 
@@ -347,8 +358,14 @@ char *getDispText(int index)
 		case TOOL_UI:
 			strcpy(TitleText, tool_menu.title);			
 			break;	
+		case MACHINE_PARA_UI:
+				strcpy(TitleText, MachinePara_menu.title);
+				break;
 		case BABY_STEP_UI:
 			strcpy(TitleText, operation_menu.babystep);			
+			break;
+		case WIFI_LIST_UI:
+			strcpy(TitleText, list_menu.title);			
 			break;
 		default:
 			break;
@@ -540,36 +557,203 @@ void clear_cur_ui()
 		case FILETRANSFER_UI:
 		///	Clear_fileTransfer();
 			break;
+		
 		case DIALOG_UI:
 			Clear_dialog();
 			break;			
+		
 		case FILETRANSFERSTATE_UI:
 		/////	Clear_WifiFileTransferdialog();
 			break;
+		
 		case PRINT_MORE_UI:
 			Clear_Printmore();
 			break;
+		
 		case LEVELING_UI:
 			Clear_Leveling();//**
 			break;
+		
 		case BIND_UI:
 			Clear_Bind();
 			break;
+		
 		case ZOFFSET_UI:
 			Clear_Zoffset();
 			break;
+		
 		case TOOL_UI:
 			Clear_Tool();
 			break;
+		
 		//chen 11.7
 		case FILAMENTCHANGE_UI:
 			Clear_FilamentChange();
 			break;
-		case BABY_STEP_UI:
-			Clear_babyStep();
-			break;
+//		case MESHLEVELING_UI:
+//				  Clear_MeshLeveling();
+//				  break;
+		  case HARDWARE_TEST_UI:
+//				  Clear_Hardwaretest();
+				  break;
+		  case WIFI_LIST_UI:
+				  Clear_Wifi_list();
+				  break;
+		  case KEY_BOARD_UI:
+				  Clear_Keyboard();
+				  break;
+		  
+		  case TIPS_UI:
+			  Clear_Tips();
+			  break;
 
-		default:
+		  case MACHINE_PARA_UI:
+			  Clear_MachinePara();
+			  break;
+		  
+		  case MACHINE_SETTINGS_UI:
+			  Clear_MachineSettings();
+			  break;
+		  
+		  case TEMPERATURE_SETTINGS_UI:
+			  Clear_TemperatureSettings();
+			  break;
+		  
+		   case MOTOR_SETTINGS_UI:
+			  Clear_MotorSettings();
+			  break; 
+		   
+		   case MACHINETYPE_UI:
+			  Clear_MachineType();
+			  break;
+		   
+//		   case STROKE_UI:
+////			  Clear_Stroke();
+//			  break;  
+
+//		   case HOME_DIR_UI:
+////			  Clear_HomeDir();
+//			  break;
+
+		   case ENDSTOP_TYPE_UI:
+//			  Clear_EndstopType();
+			  break;
+
+		   case FILAMENT_SETTINGS_UI:
+			  Clear_FilamentSettings();
+			  break;
+		   
+		   case LEVELING_SETTIGNS_UI:
+			  Clear_LevelingSettings();
+			  break;  
+		   
+		   case LEVELING_PARA_UI:
+			  Clear_LevelingPara();
+			  break;
+		   
+//		   case DELTA_LEVELING_PARA_UI:
+////			  Clear_DeltaLevelPara();
+//			  break;
+		   case XYZ_LEVELING_PARA_UI:
+			  Clear_XYZLevelPara();
+			  break; 
+		   
+		   case MAXFEEDRATE_UI:
+			  Clear_MaxFeedRate();
+			  break;  
+		   
+		   case STEPS_UI:
+			  Clear_Steps();
+			  break;
+		   
+		   case ACCELERATION_UI:
+			  Clear_Acceleration();
+			  break;
+		   
+//		   case JERK_UI:
+////			  Clear_Jerk();
+//			  break;
+//		   case MOTORDIR_UI:
+////			  Clear_MotorDir();
+//			  break;
+//		   case HOMESPEED_UI:
+////			  Clear_HomeSpeed();
+//			  break;
+//		   case NOZZLE_CONFIG_UI:
+////			  Clear_NozzleConfig();
+//			  break;
+//		   case HOTBED_CONFIG_UI:
+////			  Clear_HotbedConfig();
+//			  break; 
+
+		  case ADVANCED_UI:
+			  Clear_Advanced();
+			  break; 
+		  
+//		  case DOUBLE_Z_UI:
+////			  Clear_DoubleZ();
+//			  break;
+//		  case ENABLE_INVERT_UI:
+////			  Clear_EnableInvert();
+//			  break;  
+
+		  case NUMBER_KEY_UI:
+			  Clear_NumberKey();
+			  break;
+		  
+		  case BABY_STEP_UI:
+				  Clear_babyStep();
+				  break;
+		  
+		  case FIRMWARETYPE_UI:
+			  Clear_FirmwareType();
+			  break; 
+		  
+  		  case BAUDRATE_UI:
+			  Clear_BaudRate();
+			  break;
+		  
+		  case PAUSE_POSITION_UI:
+			  Clear_PausePos();
+			  break; 
+		  
+//		  case WIFI_CONF_UI:
+//		   Clear_WifiConfig();
+//		   break;
+		  
+		  case CUSTOM_UI:
+			   Clear_CustomConf();
+			   break;
+		  
+		case BUTTONCONF_UI:
+			   Clear_buttonConf();
+			   break;
+		
+		   case MOREBTN_UI:
+		   		Clear_MoreBtns();
+				break;
+		   
+			case DISPLAY_CONF_UI:
+				Clear_displayConf();
+				break;
+			
+			case PRINTMOREBTN_UI:
+				Clear_printMoreBtn();
+				break;
+			
+			case CURRENTCONF_UI:
+				Clear_currentSetting();
+			   break;
+			
+			case CONSOLE_UI:
+//				Clear_console();
+			   break;  
+
+			case TMCSENSIVISITY_UI:
+				Clear_TMCsensitivity();
+			   break;  
+
+			default:
 			break;
 	}
 	GUI_Clear();
@@ -657,34 +841,202 @@ void draw_return_ui()
 			case DISK_UI:
 				draw_Disk();
 				break;
+			
 			case WIFI_UI:
 				draw_Wifi();
 				break;
+			
 			case MORE_UI:
 				draw_More();
 				break;
+			
 			case PRINT_MORE_UI:
 				draw_printmore();
 				break;
+			
 			case FILAMENTCHANGE_UI:
 				draw_FilamentChange();
 				break;
+			
 			case LEVELING_UI:
 				//draw_leveling();
 				break;
+				
 			case BIND_UI:
 				draw_bind();
 				break;
+			
 			case ZOFFSET_UI:
 				draw_Zoffset();
 				break;
+			
 			case TOOL_UI:
 				draw_tool();
 				break;
-			case BABY_STEP_UI:
-				draw_babyStep();
+			//lan
+//			case MESHLEVELING_UI:
+//					draw_meshleveling();
+//					break;
+//			case HARDWARE_TEST_UI:
+//					draw_Hardwaretest();
+//					break;
+			case WIFI_LIST_UI:
+					draw_Wifi_list();
+					break;
+			case KEY_BOARD_UI:
+					draw_Keyboard();
+					break;
+			
+			case TIPS_UI:
+				draw_Tips();
 				break;
 
+			case MACHINE_PARA_UI:
+				draw_MachinePara();
+				break;	
+			
+			case MACHINE_SETTINGS_UI:
+				draw_MachineSettings(); 
+				break;	
+			
+			case TEMPERATURE_SETTINGS_UI:
+				draw_TemperatureSettings();
+				break; 
+			
+			 case MOTOR_SETTINGS_UI:
+				draw_MotorSettings();
+				break;
+			 
+			 case MACHINETYPE_UI:
+				draw_MachineType();
+				break; 
+			 
+//			 case STROKE_UI:
+////				draw_Stroke();
+//				break;	
+//			 case HOME_DIR_UI:
+////				draw_HomeDir();
+//				break;
+//			 case ENDSTOP_TYPE_UI:
+////				draw_EndstopType();
+//				break;	
+			 case FILAMENT_SETTINGS_UI:
+				draw_FilamentSettings();
+				break;
+			 
+			 case LEVELING_SETTIGNS_UI:
+				draw_LevelingSettings();
+				break;
+			 
+			 case LEVELING_PARA_UI:
+				draw_LevelingPara();
+				break;
+			 
+//			 case DELTA_LEVELING_PARA_UI:
+////				draw_DeltaLevelPara();
+//				break;
+
+			 case XYZ_LEVELING_PARA_UI:
+				draw_XYZLevelPara();
+				break;
+			 
+			 case MAXFEEDRATE_UI:
+				draw_MaxFeedRate();
+				break;
+
+			 case STEPS_UI:
+				draw_Steps();
+				break;
+
+			 case ACCELERATION_UI:
+				draw_Acceleration();
+				break;
+
+//			 case JERK_UI:
+////				draw_Jerk();
+//				break;	
+
+//			 case MOTORDIR_UI:
+////				draw_MotorDir();
+//				break;
+
+//			 case HOMESPEED_UI:
+////				draw_HomeSpeed();
+//				break;
+//			case NOZZLE_CONFIG_UI:
+////				draw_NozzleConfig();
+//				break;	
+//			case HOTBED_CONFIG_UI:
+////				draw_HotbedConfig();
+//				break;
+
+			case ADVANCED_UI:
+				draw_Advanced();
+				break;
+			
+//			case DOUBLE_Z_UI:
+////				draw_DoubleZ();
+//				break;	 
+//			case ENABLE_INVERT_UI:
+////				draw_EnableInvert();
+//				break;
+			case NUMBER_KEY_UI:
+				draw_NumberKey();
+				break;	
+			
+		case DIALOG_UI:
+//				draw_dialog(DialogType);
+				break;
+
+		case BABY_STEP_UI:
+				draw_babyStep();
+				break;
+		
+		case FIRMWARETYPE_UI:
+		   draw_FirmwareType();
+		   break; 
+		
+		case BAUDRATE_UI:
+		   draw_BaudRate();
+		   break;
+		
+		case PAUSE_POSITION_UI:
+		   draw_PausePos();
+		   break;
+		
+//		case WIFI_CONF_UI:
+//		   draw_WifiConfig();
+//		   break;
+		
+		case CUSTOM_UI:
+		   draw_CustomConf();
+		   break;
+		
+		case BUTTONCONF_UI:
+		   draw_buttonConf();
+		   break;
+		
+	   case MOREBTN_UI:
+	   		draw_MoreBtns();
+			break;
+	   
+		case DISPLAY_CONF_UI:
+			draw_displayConf();
+			break;
+		
+		case PRINTMOREBTN_UI:
+			draw_printMoreBtn();
+		   break;
+		
+		case CURRENTCONF_UI:
+			draw_currentSetting();
+		   break;
+		case CONSOLE_UI:
+//			draw_console();
+		   break;		
+		case TMCSENSIVISITY_UI:
+			draw_TMCsensitivity();
+			break;  
 			default:
 				break;
 		}
@@ -827,6 +1179,11 @@ int8_t get_printing_rate(FIL *fileHandle)
 #if 1
 extern uint16_t z_high_count;
 extern uint8_t move_speed_flg;
+extern uint8_t current_update_flag;
+
+extern uint8_t maxFR_update_flag;
+extern uint8_t accel_update_flag;
+extern uint8_t sensivisity_update;
 
 void GUI_RefreshPage()
 {
@@ -1014,7 +1371,16 @@ void GUI_RefreshPage()
 			break;
 		case DIALOG_UI:
 			filament_dialog_handle();
+			//lan
+			wifi_scan_handle();
 			break;	
+		case KEY_BOARD_UI:
+				update_password_disp();
+//				if(valueType == wifi_setting)
+//				{
+					update_join_state_disp();
+//				}
+				break;
 		case BABY_STEP_UI:
 			if(gCfgItems.zoffset_disp_flag == ENABLE)
 			{
@@ -1036,6 +1402,105 @@ void GUI_RefreshPage()
 				//memset(gCfgItems.disp_zoffset_buf,0,sizeof(gCfgItems.disp_zoffset_buf));
 			}
 			break;
+				case  STEPS_UI:
+			if (step_update_flag == 1)
+			{
+				step_update_flag = 0;
+				disp_motor_step();
+			}	
+			break;
+		case  CURRENTCONF_UI:
+			if (current_update_flag == 1)
+			{
+				current_update_flag = 0;
+				disp_motor_current();
+			}	
+			break;
+		case  MAXFEEDRATE_UI:
+			if (current_update_flag == 1)
+			{
+				maxFR_update_flag = 0;
+				disp_maxFeedRate();
+			}	
+			break;	
+		case  ACCELERATION_UI:
+			if (current_update_flag == 1)
+			{
+				accel_update_flag = 0;
+				disp_acceleration();
+			}	
+			break;	
+		case  LEVELING_PARA_UI:
+			if (probeOffset_update == 1)
+			{
+				probeOffset_update = 0;
+				disp_probeOffset();
+			}	
+			break;	
+		case  TMCSENSIVISITY_UI:
+			if (sensivisity_update == 1)
+			{
+				sensivisity_update = 0;
+				disp_TMCsensivisity();
+			}	
+			break;
+			case WIFI_LIST_UI:
+				if(wifi_refresh_flg == 1)
+				{					
+					//disp_wifi_state();
+					disp_wifi_list();
+					wifi_refresh_flg = 0;
+				}
+				break;
+			case TIPS_UI:
+				switch(tips_type)
+				{
+					 case TIPS_TYPE_JOINING:
+							if(wifi_link_state == WIFI_CONNECTED && strcmp((const char *)wifi_list.wifiConnectedName,(const char *)wifi_list.wifiName[wifi_list.nameIndex]) == 0)
+							{
+								tips_disp.timer = TIPS_TIMER_STOP;
+								tips_disp.timer_count = 0;
+								
+								Clear_Tips();
+								tips_type = TIPS_TYPE_WIFI_CONECTED;
+								draw_Tips();
+
+								//memset(&wifi_list.wifiConnectedName,0,sizeof(wifi_list.wifiConnectedName));
+								//memcpy(&wifi_list.wifiConnectedName,wifi_list.wifiName[wifi_list.nameIndex],WIFI_NAME_BUFFER_SIZE);
+							}
+							if(tips_disp.timer_count >= 30)
+							{
+								tips_disp.timer = TIPS_TIMER_STOP;
+								tips_disp.timer_count = 0;
+								Clear_Tips();
+								tips_type = TIPS_TYPE_TAILED_JOIN;
+								draw_Tips();
+							}
+							break;
+						case TIPS_TYPE_TAILED_JOIN:
+								if(tips_disp.timer_count >= 3)
+								{
+									tips_disp.timer = TIPS_TIMER_STOP;
+									tips_disp.timer_count = 0;
+									last_disp_state = TIPS_UI;
+									Clear_Tips();
+									draw_Wifi_list();
+								}
+								break;
+					   case TIPS_TYPE_WIFI_CONECTED:
+								if(tips_disp.timer_count >= 3)
+								{
+									tips_disp.timer = TIPS_TIMER_STOP;
+									tips_disp.timer_count = 0;
+									last_disp_state = TIPS_UI;
+									Clear_Tips();
+									draw_Wifi();
+								}
+								break;
+					   default:
+						break;
+				}
+				break;		
 			default:
 				break;
 				

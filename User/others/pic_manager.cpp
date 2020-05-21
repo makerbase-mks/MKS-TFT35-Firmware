@@ -4,6 +4,8 @@
 #include "gui.h"
 #include "spi_flash.h"
 #include "draw_ui.h"
+#include "wifi_module.h"
+
 //#define Bank1_NOR2_ADDR       ((uint32_t)0x64000000)
 //extern void SPI_FLASH_BufferRead(u8* pBuffer, u32 ReadAddr, u16 NumByteToRead);
 
@@ -59,7 +61,7 @@ void PicMsg_Init(void)
 	
 }
 */
-
+#if 1
 void Pic_Read(uint8_t *Pname,uint8_t *P_Rbuff)
 {
 	uint8_t i, j;
@@ -100,7 +102,74 @@ void Pic_Read(uint8_t *Pname,uint8_t *P_Rbuff)
 		}
 	}
 }
+#elif 
+uint32_t pic_addr_offset;
+uint16_t pic_row;
+uint8_t little_image_flag=0;
+	uint8_t Pic_cnt;
+void Pic_Read(uint8_t *Pname,uint8_t *P_Rbuff,uint8_t part,uint8_t allcnt)
+{
+	uint8_t i, j;
+	//uint8_t Pic_cnt;
+	uint32_t tmp_cnt = 0;
+	PIC_MSG PIC;
+	uint16_t *tmp_16bit_addr;
+	uint8_t *tmp_8bit_addr;  
+	SPI_FLASH_BufferRead(&Pic_cnt,PIC_COUNTER_ADDR,1);
+	if(Pic_cnt == 0xff)
+	{
+		Pic_cnt = 0;
+	}	
+    if(part==0)
+    {
+		for(i=0;i<Pic_cnt;i++)	
+//		for(i=0;i<153;i++)	
+    	{
+    		//��ȡͼƬ����
+    		j = 0;
+    		do
+    		{
+    			SPI_FLASH_BufferRead(&PIC.name[j],PIC_NAME_ADDR + tmp_cnt,1);
+    			tmp_cnt++;
+    		}while(PIC.name[j++] != '\0');
 
+    		if((strcmp((char*)Pname,(char*)PIC.name))==0)
+    		{
+        		//��ȡͼƬ��Сֵ
+        		SPI_FLASH_BufferRead(PIC.size.bytes,PIC_SIZE_ADDR+i*4,4);
+				if(PIC.size.dwords < sizeof(bmp_public_buf))//СͼƬ
+				{
+					little_image_flag=1;
+				}
+                pic_addr_offset=PIC.size.dwords>>2;   //����������ʾ 		
+    		    pic_row=i;
+    		    break;
+    		}
+          }
+    }
+
+    if(little_image_flag == 1)
+    {
+    	SPI_FLASH_BufferRead((uint8_t *)P_Rbuff,PIC_DATA_ADDR+pic_row*PER_PIC_MAX_SPACE,PIC.size.dwords);
+	if(DMA_ERRO_FLAG)
+	{
+		DMA_ERRO_FLAG = 0;
+		SPI_FLASH_BufferRead((uint8_t *)P_Rbuff,PIC_DATA_ADDR+pic_row*PER_PIC_MAX_SPACE,PIC.size.dwords);
+	}
+    }
+    else
+    {
+    	SPI_FLASH_BufferRead((uint8_t *)P_Rbuff,PIC_DATA_ADDR+pic_row*PER_PIC_MAX_SPACE+part*pic_addr_offset,pic_addr_offset);
+    	if(DMA_ERRO_FLAG)
+    	{
+    		DMA_ERRO_FLAG = 0;
+    		SPI_FLASH_BufferRead((uint8_t *)P_Rbuff,PIC_DATA_ADDR+pic_row*PER_PIC_MAX_SPACE+part*pic_addr_offset,pic_addr_offset);
+    	}
+    }	
+	
+}
+
+#endif
 uint32_t logo_addroffset = 0;
 void Pic_Logo_Read(uint8_t *LogoName,uint8_t *Logo_Rbuff,uint32_t LogoReadsize)
 {
@@ -190,4 +259,643 @@ void bindBmpFileData(const uint8_t **pBuf, uint8_t *pName)
   */
 }
 #endif
+
+void flash_reWriteInf(u8* pBuffer, u32 WriteAddr, u16 NumByteToWrite)
+{
+	uint32_t flash_inf_valid_flg;
+//	uint8_t testLen = 0;
+	uint8_t autoLevelCmd[201] = {0};
+	uint8_t FuncBtn1Cmd[201] = {0};
+	uint8_t moreItem1Cmd[201]={0};	
+	uint8_t moreItem2Cmd[201]={0};
+	uint8_t moreItem3Cmd[201]={0};
+	uint8_t moreItem4Cmd[201]={0};
+	uint8_t moreItem5Cmd[201]={0};
+	uint8_t moreItem6Cmd[201]={0};
+	uint8_t moreItem7Cmd[201]={0};	
+	uint8_t morefunc1Cmd[201]={0};
+	uint8_t morefunc2Cmd[201]={0};
+	uint8_t morefunc3Cmd[201]={0};	
+	uint8_t morefunc4Cmd[201]={0};
+	uint8_t morefunc5Cmd[201]={0};
+	uint8_t morefunc6Cmd[201]={0};
+	uint8_t morefunc7Cmd[201]={0};
+	uint8_t wifi_ap_sta = 0;
+	char ap_name[32] = {0};
+	char keyCode[64] = {0};
+	char ip_addr[16] = {0};
+	char mask[16] 	 = {0};
+	char gate[16]  	 = {0};
+	char dhcp_flag = 0;
+	char wifi_type = 0;
+ //       testLen=strlen((char const*)pBuffer)+1;
+	SPI_FLASH_BufferRead((uint8_t *)ap_name,WIFI_NAME_ADDR,32);
+	SPI_FLASH_BufferRead((uint8_t *)keyCode,WIFI_KEYCODE_ADDR,64);
+	SPI_FLASH_BufferRead((uint8_t *)ip_addr,WIFI_IP_ADDR,15);
+	SPI_FLASH_BufferRead((uint8_t *)mask,WIFI_MASK_ADDR,15);
+	SPI_FLASH_BufferRead((uint8_t *)gate,WIFI_GATE_ADDR,15);
+	SPI_FLASH_BufferRead((uint8_t*)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+	SPI_FLASH_BufferRead((uint8_t*)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+	SPI_FLASH_BufferRead((uint8_t*)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+	SPI_FLASH_BufferRead((uint8_t*)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,201);
+	SPI_FLASH_BufferRead((uint8_t*)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,201);	
+	SPI_FLASH_BufferRead((uint8_t*)moreItem1Cmd,BUTTON_CMD1_ADDR,201);	
+	SPI_FLASH_BufferRead((uint8_t*)&moreItem2Cmd,BUTTON_CMD2_ADDR,201);	
+	SPI_FLASH_BufferRead((uint8_t*)moreItem3Cmd,BUTTON_CMD3_ADDR,201);	
+	SPI_FLASH_BufferRead((uint8_t*)moreItem4Cmd,BUTTON_CMD4_ADDR,201);	
+	SPI_FLASH_BufferRead((uint8_t*)moreItem5Cmd,BUTTON_CMD5_ADDR,201);	
+	SPI_FLASH_BufferRead((uint8_t*)moreItem6Cmd,BUTTON_CMD6_ADDR,201);	
+	SPI_FLASH_BufferRead((uint8_t*)moreItem7Cmd,BUTTON_CMD7_ADDR,201);		
+	SPI_FLASH_BufferRead((uint8_t*)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,201);	
+	SPI_FLASH_BufferRead((uint8_t*)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,201);	
+	SPI_FLASH_BufferRead((uint8_t*)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,201);	
+	SPI_FLASH_BufferRead((uint8_t*)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,201);	
+	SPI_FLASH_BufferRead((uint8_t*)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,201);	
+	SPI_FLASH_BufferRead((uint8_t*)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,201);	
+	SPI_FLASH_BufferRead((uint8_t*)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,201);	
+	
+	SPI_FLASH_SectorErase(SD_INF_ADDR);
+	
+	flash_inf_valid_flg = FLASH_INF_VALID_FLAG;
+	SPI_FLASH_BufferWrite((uint8_t*)&flash_inf_valid_flg,FlASH_INF_VALID_ADDR,4);
+	
+	switch(WriteAddr)
+	{
+	case WIFI_NAME_ADDR:	
+//		SPI_FLASH_BufferWrite((u8 *)pBuffer,WIFI_NAME_ADDR,(strlen((char const*)pBuffer)+1));
+//		SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+//		SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+//		SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+//		SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+//		SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+//		SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+//		SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+//		SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+//		SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+//		SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+//		SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+//		SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+//		SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+//		SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+//		SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+//		SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+//		SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+//		SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+//		SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+//		SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+//		SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+//		SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+//		SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+		break;
+		case WIFI_KEYCODE_ADDR:	
+//			SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+//			SPI_FLASH_BufferWrite((u8 *)pBuffer,WIFI_KEYCODE_ADDR,(strlen((char const*)pBuffer)+1));
+//			SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+//			SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+//			SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+//			SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+//			SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+//			SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+//			SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+//			SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+//			SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+			break;
+			case WIFI_IP_ADDR:
+//				SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+//				SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+//				SPI_FLASH_BufferWrite((u8 *)pBuffer,WIFI_IP_ADDR,(strlen((char const*)pBuffer)+1));
+//				SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+//				SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+//				SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+//				SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+//				SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+//				SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+//				SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+//				SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+//				SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+//				SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+//				SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+//				SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+//				SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+//				SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+//				SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+//				SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+//				SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+//				SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+//				SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+//				SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+//				SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+			break;
+//		case WIFI_MODE_SEL_ADDR:
+//			SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+//			SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+//			SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+//			SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+//			SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+//			SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+//			SPI_FLASH_BufferWrite((u8 *)pBuffer,WIFI_MODE_SEL_ADDR,1);
+//			SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+//			SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+//			SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+//			SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+//			SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+//			break;
+		case BUTTON_AUTOLEVELING_ADDR:
+			SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+			SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+			SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+			SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+			SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+			SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)pBuffer)+1));
+			//test
+ //                       testLen =(uint8_t) strlen((char const*)pBuffer);
+//			memset(cmd_code,0,sizeof(cmd_code));
+//			SPI_FLASH_BufferRead((u8 *)cmd_code,BUTTON_AUTOLEVELING_ADDR,201);
+//			
+			SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+			SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+			SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));		
+			break;
+			case BUTTON_FUNCTION1_ADDR:
+				SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+				SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+				SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+				SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+				SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+				SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_FUNCTION1_ADDR,(strlen((char const*)pBuffer)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+				break;
+			case BUTTON_CMD1_ADDR:
+				SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+				SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+				SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+				SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+				SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+				SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_CMD1_ADDR,(strlen((char const*)pBuffer)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+				break;
+			case BUTTON_CMD2_ADDR:
+				SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+				SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+				SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+				SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+				SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+				SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_CMD2_ADDR,(strlen((char const*)pBuffer)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+				break;
+			case BUTTON_CMD3_ADDR:
+				SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+				SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+				SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+				SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+				SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+				SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_CMD3_ADDR,(strlen((char const*)pBuffer)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+				break;
+			case BUTTON_CMD4_ADDR:
+				SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+				SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+				SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+				SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+				SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+				SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_CMD4_ADDR,(strlen((char const*)pBuffer)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+				break;
+		case BUTTON_CMD5_ADDR:
+			SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+			SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+			SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+			SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+			SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+			SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_CMD5_ADDR,(strlen((char const*)pBuffer)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+			SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+			SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+			break;
+			case BUTTON_CMD6_ADDR:
+				SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+				SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+				SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+				SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+				SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+				SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_CMD6_ADDR,(strlen((char const*)pBuffer)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+				break;
+			case BUTTON_CMD7_ADDR:
+				SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+				SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+				SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+				SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+				SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+				SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_CMD7_ADDR,(strlen((char const*)pBuffer)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+				break;
+			case BUTTON_MOREFUNC1_ADDR:
+				SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+				SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+				SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+				SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+				SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+				SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)pBuffer)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+				break;
+			case BUTTON_MOREFUNC2_ADDR:
+				SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+				SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+				SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+				SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+				SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+				SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)pBuffer)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+				break;
+
+			case BUTTON_MOREFUNC3_ADDR:
+			SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+			SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+			SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+			SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+			SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+			SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)pBuffer)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+			SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+			SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));		
+				break;
+			case BUTTON_MOREFUNC4_ADDR:
+				SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+				SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+				SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+				SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+				SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+				SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)pBuffer)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+				break;
+			case BUTTON_MOREFUNC5_ADDR:
+				SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+				SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+				SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+				SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+				SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+				SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+				SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)pBuffer)+1));
+				SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+				SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+				break;
+		case BUTTON_MOREFUNC6_ADDR:
+			SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+			SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+			SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+			SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+			SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+			SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+			SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)pBuffer)+1));			
+			SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+
+			break;
+		case BUTTON_MOREFUNC7_ADDR:
+			SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+			SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+			SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+			SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+			SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+			SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+			SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+			SPI_FLASH_BufferWrite((u8 *)pBuffer,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)pBuffer)+1));	
+
+			break;
+		default:
+			SPI_FLASH_BufferWrite((u8 *)ap_name,WIFI_NAME_ADDR,(strlen((char const*)ap_name)+1));
+			SPI_FLASH_BufferWrite((u8 *)keyCode,WIFI_KEYCODE_ADDR,(strlen((char const*)keyCode)+1));
+			SPI_FLASH_BufferWrite((u8 *)ip_addr,WIFI_IP_ADDR,(strlen((char const*)ip_addr)+1));
+			SPI_FLASH_BufferWrite((u8 *)mask,WIFI_MASK_ADDR,(strlen((char const*)mask)+1));
+			SPI_FLASH_BufferWrite((u8 *)gate,WIFI_GATE_ADDR,(strlen((char const*)gate)+1));
+			SPI_FLASH_BufferWrite((u8 *)&dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)&wifi_ap_sta,WIFI_MODE_SEL_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)&wifi_type,WIFI_MODE_TYPE_ADDR,1);
+			SPI_FLASH_BufferWrite((u8 *)autoLevelCmd,BUTTON_AUTOLEVELING_ADDR,(strlen((char const*)autoLevelCmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)FuncBtn1Cmd,BUTTON_FUNCTION1_ADDR,(strlen((char const*)FuncBtn1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem1Cmd,BUTTON_CMD1_ADDR,(strlen((char const*)moreItem1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem2Cmd,BUTTON_CMD2_ADDR,(strlen((char const*)moreItem2Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem3Cmd,BUTTON_CMD3_ADDR,(strlen((char const*)moreItem3Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem4Cmd,BUTTON_CMD4_ADDR,(strlen((char const*)moreItem4Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem5Cmd,BUTTON_CMD5_ADDR,(strlen((char const*)moreItem5Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem6Cmd,BUTTON_CMD6_ADDR,(strlen((char const*)moreItem6Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)moreItem7Cmd,BUTTON_CMD7_ADDR,(strlen((char const*)moreItem7Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc1Cmd,BUTTON_MOREFUNC1_ADDR,(strlen((char const*)morefunc1Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc2Cmd,BUTTON_MOREFUNC2_ADDR,(strlen((char const*)morefunc2Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc3Cmd,BUTTON_MOREFUNC3_ADDR,(strlen((char const*)morefunc3Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc4Cmd,BUTTON_MOREFUNC4_ADDR,(strlen((char const*)morefunc4Cmd)+1));			
+			SPI_FLASH_BufferWrite((u8 *)morefunc5Cmd,BUTTON_MOREFUNC5_ADDR,(strlen((char const*)morefunc5Cmd)+1));
+			SPI_FLASH_BufferWrite((u8 *)morefunc6Cmd,BUTTON_MOREFUNC6_ADDR,(strlen((char const*)morefunc6Cmd)+1));			
+			SPI_FLASH_BufferWrite((u8 *)morefunc7Cmd,BUTTON_MOREFUNC7_ADDR,(strlen((char const*)morefunc7Cmd)+1));	
+			break;
+	}
+
+//				SPI_FLASH_BufferRead((uint8_t*)&test,WIFI_MODE_SEL_ADDR,1);
+        		//test
+//		memset(cmd_code,0,sizeof(cmd_code));
+//		SPI_FLASH_BufferRead((u8 *)cmd_code,BUTTON_AUTOLEVELING_ADDR,201);
+}
 

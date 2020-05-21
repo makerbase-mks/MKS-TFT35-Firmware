@@ -151,6 +151,10 @@ extern char wifi_loop_time;
 extern int cfg_wifi_flag;
 extern int cfg_cloud_flag;
 extern int send_to_wifi(char *buf, int len);
+extern void wifi_looping();
+extern int raw_send_to_wifi(char *buf, int len);
+extern int package_to_wifi(WIFI_RET_TYPE type, char *buf, int len);
+extern void get_wifi_list_command_send();
 
 #endif
 

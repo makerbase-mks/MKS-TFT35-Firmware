@@ -12,7 +12,12 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 
 typedef struct
 {
-	volatile int8_t custom_pic_flag;
+	//add
+	volatile int32_t value_bk_color;
+	volatile int32_t value_text_color;
+
+	volatile int32_t default_bk_color;
+	volatile int32_t default_text_color;
 	
 	volatile int32_t background_color; //èƒŒæ™¯é¢œè‰²
 	volatile int32_t title_color; //æ ‡é¢˜é¢œè‰²
@@ -30,6 +35,8 @@ typedef struct
 	volatile int32_t btn_state_sel_textcolor;
 	volatile int32_t back_btn_color;
 	volatile int32_t back_btn_textcolor;
+	volatile int32_t back1_btn_color;
+	volatile int32_t back1_btn_textcolor;	
 	volatile int32_t printing_bar_color_left;
 	volatile int32_t printing_bar_color_right;
 	volatile int32_t printing_bar_text_color_left;
@@ -38,7 +45,7 @@ typedef struct
 	volatile int32_t dialog_btn_textcolor;
 	volatile int32_t printfile_color;
 	volatile int32_t printfile_textcolor;
-	
+	volatile int8_t custom_pic_flag;	
 	volatile float curPos[3];
 	volatile float curSprayerTemp[2];	// 2¸öÅçÍ·ÎÂ¶È
 	volatile float curBedTemp;	//ÈÈ´²ÎÂ¶È
@@ -166,10 +173,10 @@ typedef struct
 	volatile uint8_t insert_det_module;// 1:½ÓÈë220detÄ£¿é£¬ÆäËûÖµ:½ÓPWC¹Ø»úÄ£¿é¡£PWC¿ÉÒÔÌæ´ú220detÄ£¿é¡£
 
 	volatile uint8_t filament_det1_level_flg;// ¶ÏÁÏ¼ì²â1£»1:¸ßµçÆ½´¥·¢£¬0µÍµçÆ½´¥·¢¡£
-	volatile uint8_t filament_det2_level_flg;// ¶ÏÁÏ¼ì²â2£»1:¸ßµçÆ½´¥·¢£¬0µÍµçÆ½´¥·¢¡
+	volatile uint8_t filament_det2_level_flg;// ¶ÏÁÏ¼ì²â2£»1:¸ßµçÆ½´¥·¢£¬0µÍµçÆ½´¥·¢	
 	volatile uint8_t multiple_language;
 	volatile uint8_t overturn_180;	 //ÆÁÄ»·­×ª180¡ã
-
+	volatile uint8_t user_rotation;
 	volatile char wifi_ap[32];	//wifiÍøÂçÃû³Æ×Ö·û´®
 	volatile char wifi_key[64]; //wifiÃÜÂë×Ö·û´®
 	volatile uint8_t wifi_mode_sel;
@@ -194,11 +201,43 @@ typedef struct
 	volatile uint8_t has_flash_pre_view;//ÓÐÍ¼Æ¬Ô¤ÀÀ
 	volatile uint8_t baby_step_display_flg;
 	volatile uint8_t calibrate_disp_flag;
+	volatile uint8_t wifi_scan;
 
 	volatile uint8_t zoffset_disp_flag;
 	volatile uint8_t disp_zoffset_buf[30];
 	/*******************************************end**************/
-
+	volatile uint16_t xCurrent;
+	volatile uint16_t yCurrent;
+	volatile uint16_t zCurrent;
+	volatile uint16_t e0Current;
+	volatile uint16_t e1Current;
+	float xStep;
+	float yStep;
+	float zStep;
+	float e0Step;
+	float e1Step;	
+	float xProbeOffset;
+	float yProbeOffset;	
+	float zProbeOffset;	
+	
+	volatile uint16_t xMaxFeedRate;
+	volatile uint16_t yMaxFeedRate;
+	volatile uint16_t zMaxFeedRate;
+	volatile uint16_t e0_MaxFeedRate;
+	volatile uint16_t e1_MaxFeedRate;
+	
+	volatile uint16_t xMaxAccel;
+	volatile uint16_t yMaxAccel;
+	volatile uint16_t zMaxAccel;
+	volatile uint16_t e0_MaxAccel;
+	volatile uint16_t e1_MaxAccel;	
+	volatile uint16_t printAccel;
+	volatile uint16_t retractAccel;
+	volatile uint16_t travelAccel;
+	
+	volatile int16_t xSensivisity;
+	volatile int16_t ySensivisity;
+	volatile int16_t zSensivisity;
 } CFG_ITMES;
 
 
@@ -320,6 +359,14 @@ typedef struct
 }CFG_PRINTER_ITMES;
 
 extern CFG_PRINTER_ITMES CfgPrinterItems;
+
+
+extern char cmd_code[201];
+
+
+
+
+
 
 typedef struct 
 {

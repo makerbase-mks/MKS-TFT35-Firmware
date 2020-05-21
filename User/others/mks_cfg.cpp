@@ -569,6 +569,10 @@ else
 void printer_init()
 {
 	uint32_t flash_inf_valid_flag = 0;
+	gCfgItems.value_text_color = 0x000000;	
+	gCfgItems.value_bk_color = 0xFFFFFF;	
+	gCfgItems.default_bk_color = 0xff5449;
+	gCfgItems.default_text_color = 0xFFFFFF;
 
 	gCfgItems.preheat_desireBedTemp = 50;
 	gCfgItems.preheat_desireSprayerTemp[0] = gCfgItems.preheat_desireSprayerTemp[1] = 180;
@@ -711,6 +715,8 @@ void printer_init()
 	gCfgItems.dialog_btn_textcolor = 0xffffff;
 	gCfgItems.printfile_color = 0x000000;
 	gCfgItems.printfile_textcolor = 0xffffff;
+	gCfgItems.back1_btn_textcolor = 0xFFFFFF;
+	gCfgItems.back1_btn_color = 0xff5449;
 #endif
 	
 	gCfgItems.button_3d_effect_flag = 0;
@@ -820,10 +826,11 @@ void printer_init()
 
 	gCfgItems.baby_step_display_flg = 0;
 	gCfgItems.calibrate_disp_flag = 0;
-
+	gCfgItems.user_rotation = 0;
 	/*wifi_cfg*/
 	gCfgItems.wifi_mode_sel = 1;//1为AP模式，其他为client模式，默认为AP模式。
-	
+		//lan
+	gCfgItems.wifi_scan = 0;		//sta mode use
 	memset(&wifiPara, 0, sizeof(wifiPara));
 	memset(&ipPara, 0, sizeof(ipPara));
 	
@@ -894,6 +901,8 @@ void printer_init()
 		SPI_FLASH_BufferRead((uint8_t *)ipPara.gate,WIFI_GATE_ADDR,15);
 		SPI_FLASH_BufferRead((uint8_t*)&ipPara.dhcp_flag,WIFI_DHCP_FLAG_ADDR,1);
 		SPI_FLASH_BufferRead((uint8_t*)&gCfgItems.wifi_mode_sel,WIFI_MODE_SEL_ADDR,1);
+		if (gCfgItems.wifi_mode_sel!=1)
+			gCfgItems.wifi_scan = 1;
 		SPI_FLASH_BufferRead((uint8_t*)&gCfgItems.wifi_type,WIFI_MODE_TYPE_ADDR,1);
 		if((gCfgItems.wifi_type != HLK_WIFI) && (gCfgItems.wifi_type != ESP_WIFI))
 		{
@@ -929,6 +938,40 @@ void printer_init()
 		BMP_PIC_X = 0 ;
 		BMP_PIC_Y = 17;
 	}
+	
+	#if defined(TFT35)
+
+
+	gCfgItems.xStep = 0;
+	gCfgItems.yStep = 0;
+	gCfgItems.zStep = 0;
+	gCfgItems.e0Step = 0;
+	gCfgItems.e1Step = 0;
+	gCfgItems.xCurrent = 0;
+	gCfgItems.yCurrent = 0;
+	gCfgItems.zCurrent = 0;
+	gCfgItems.e0Current = 0;
+	gCfgItems.e1Current = 0;
+	gCfgItems.xMaxFeedRate = 0;
+	gCfgItems.yMaxFeedRate = 0;
+	gCfgItems.zMaxFeedRate = 0;
+	gCfgItems.e0_MaxFeedRate = 0;
+	gCfgItems.e1_MaxFeedRate = 0;
+	gCfgItems.xMaxAccel = 0;
+	gCfgItems.yMaxAccel = 0;
+	gCfgItems.zMaxAccel = 0;
+	gCfgItems.e0_MaxAccel = 0;
+	gCfgItems.e1_MaxAccel = 0;
+	gCfgItems.printAccel = 0;
+	gCfgItems.retractAccel = 0;
+	gCfgItems.travelAccel  =0;
+	gCfgItems.xProbeOffset = 0;
+	gCfgItems.yProbeOffset = 0;
+	gCfgItems.zProbeOffset = 0;
+	gCfgItems.xSensivisity = 0;
+	gCfgItems.ySensivisity = 0;
+	gCfgItems.zSensivisity = 0;
+	#endif
 }
 void recover_cfg_inf_tft()
 {

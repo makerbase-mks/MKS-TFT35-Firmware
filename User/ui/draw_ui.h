@@ -25,6 +25,38 @@
 #include "string_deal.h"
 #include "pic.h"
 #include "Multi_language.h"
+//lan
+#include "draw_meshleveling.h"
+#include "draw_machine_para.h"
+#include "draw_ready_print.h"
+#include "draw_machine_settings.h"
+#include "draw_temperature_settings.h"
+#include "draw_motor_settings.h"
+#include "draw_machine_type.h"
+#include "draw_filament_settings.h"
+#include "draw_levelingsettings.h"
+#include "draw_levelingPara_config.h"
+#include "draw_XYZLevelPara.h"
+#include "draw_MaxFeedRate.h"
+#include "draw_steps.h"
+#include "draw_acceleration.h"
+#include "draw_advanced.h"
+#include "draw_number_key.h"
+#include "draw_firmware_type.h"
+#include "draw_baud_rate.h"
+#include "draw_Pause_pos.h"
+//#include "draw_wifi_conf.h"
+#include "draw_customConf.h"
+#include "draw_printMoreBtn.h"
+#include "draw_MoreBtns.h"
+#include "draw_display_conf.h"
+#include "draw_buttonConf.h"
+#include "draw_keyboard.h"
+#include "wifi_list.h"
+#include "draw_current_settings.h"
+//#include "draw_console.h"
+#include "draw_TMC_sensitivity.h"
+#include "draw_Tips.h"
 
 #if defined(TFT35)
 #define SAVE_FROM_SD				//断电续打保存在SD中。
@@ -116,6 +148,11 @@ extern uint8_t default_preview_flg;
 
 #define FILE_PRE_PIC_X_OFFSET	8
 #define FILE_PRE_PIC_Y_OFFSET	5
+//lan
+#define VALUE_DEFAULT_X				70
+#define VALUE_DEFAULT_Y				28
+
+
 #endif
 
 #define GUI_PURPLE			0x300018
@@ -159,6 +196,171 @@ extern char BMP_PIC_Y;  // 0// 17
 
 #define FILE_SYS_USB	0
 #define FILE_SYS_SD	1
+extern uint8_t gcodeSet_flag;
+
+typedef enum
+{
+	X_stroke,
+	Y_stroke,
+	Z_stroke,
+	X_stroke_min,
+	Y_stroke_min,
+	Z_stroke_min,
+
+	Load_Temper_limit,
+	Load_Speed,
+	Load_Length,
+	Unload_Temper_limit,
+	Unload_Speed,
+	Unload_Length,	
+
+	xoffset,
+	yoffset,
+	zoffset,
+	xyspeed,
+	zspeed,
+
+	DeltaRadius,
+	DeltaDiagonalRod,
+	PrintableRadius,
+	DeltaHeight,
+	SmoothRodOffset,
+	EffectorOffset,
+	CalibrationRadius,
+
+	Point1_x,
+	Point2_x,
+	Point3_x,
+	Point4_x,
+	Point5_x,
+
+	Point1_y,
+	Point2_y,
+	Point3_y,
+	Point4_y,
+	Point5_y,
+	Points_count,
+
+	XMaxFeedRate,
+	YMaxFeedRate,
+	ZMaxFeedRate,
+	E0MaxFeedRate,
+	E1MaxFeedRate,
+	
+	PrintAcceleration,
+	RetractAcceleration,
+	TravelAcceleration,
+	XAcceleration,
+	YAcceleration,
+	ZAcceleration,
+	E0Acceleration,
+	E1Acceleration,
+
+	XJerk,
+	YJerk,
+	ZJerk,
+	EJerk,
+
+	Xstep,
+	Ystep,
+	Zstep,
+	E0step,
+	E1step,
+
+	XYspeed,
+	Zspeed,
+
+	Nozzle_Cnt,
+	Nozzle_min,
+	Nozzle_max,
+	Extrude_min_temper,
+	Nozzle_pid_p,
+	Nozzle_pid_i,
+	Nozzle_pid_d,
+	
+	HotBed_min,
+	HotBed_max,
+	HotBed_pid_p,
+	HotBed_pid_i,
+	HotBed_pid_d,
+	Break_Z_error,
+	z_high_level,
+	z_speed_level,
+	xy_speed_level,
+	Position_x,
+	Position_y,
+	Position_z,
+	wifi_port,
+	more_func_cnt,
+	more_btn_cnt,
+    btn_textOffset,
+    current_x,
+    current_y,
+    current_z,
+    current_E0,
+    current_E1,
+    Sensivisity_X,
+    Sensivisity_Y,
+    Sensivisity_Z
+}value_state;
+
+extern value_state value;
+
+
+
+typedef enum
+{
+	wifi_setting,
+	auto_levelCmd,
+	wifi_name,
+	wifi_key,
+	wifi_host,
+	func_btn1Cmd,
+	btn1Cmd,
+	btn2Cmd,
+	btn3Cmd,
+	btn4Cmd,
+	btn5Cmd,
+	btn6Cmd,
+	btn7Cmd,	
+	func1Cmd,
+	func2Cmd,
+	func3Cmd,
+	func4Cmd,
+	func5Cmd,
+	func6Cmd,
+	func7Cmd,
+	gcodeCmd
+}value_type;
+
+extern value_type valueType;
+
+
+
+
+//
+//typedef enum
+//{
+//	dis_bkColor,
+//	tileColor,
+//	sta_bkColor,
+//	sta_textColor,
+//	file_bkColor,
+//	file_textColor,
+//	btn_bkColor,
+//	bnt_textColor,
+//	sta_btn_bkColor,
+//	sta_btn_textColor,
+//	back_btn_bkColor,
+//	back_btn_textColor,
+//	sel_btn_bkColor,
+//	sel_btn_textColor,
+//	dialog_btn_bkColor,
+//	dialog_btn_textColor
+//}value_color;
+//
+//extern value_color color_set;
+//
 
 
 struct PressEvt
@@ -217,7 +419,52 @@ typedef enum
 	BIND_UI,
 	ZOFFSET_UI,
 	TOOL_UI,
-	BABY_STEP_UI
+	////lan
+	HARDWARE_TEST_UI,
+	WIFI_LIST_UI,
+	KEY_BOARD_UI,
+	TIPS_UI,
+	MACHINE_PARA_UI,
+	MACHINE_SETTINGS_UI,
+	TEMPERATURE_SETTINGS_UI,
+	MOTOR_SETTINGS_UI,
+	MACHINETYPE_UI,
+	STROKE_UI,
+	HOME_DIR_UI,
+	ENDSTOP_TYPE_UI,
+	FILAMENT_SETTINGS_UI,
+	LEVELING_SETTIGNS_UI,
+	LEVELING_PARA_UI,
+	DELTA_LEVELING_PARA_UI,
+	XYZ_LEVELING_PARA_UI,
+	MAXFEEDRATE_UI,
+	STEPS_UI,
+	ACCELERATION_UI,
+	JERK_UI,
+	MOTORDIR_UI,
+	HOMESPEED_UI,
+	NOZZLE_CONFIG_UI,
+	HOTBED_CONFIG_UI,
+	ADVANCED_UI,
+	DOUBLE_Z_UI,
+	ENABLE_INVERT_UI,
+	NUMBER_KEY_UI,
+	BABY_STEP_UI,
+	FIRMWARETYPE_UI,
+	BAUDRATE_UI,
+	PAUSE_POSITION_UI,
+	WIFI_CONF_UI,
+	CUSTOM_UI,
+	COLOR_UI,
+	BUTTON_UI,
+	DISPLAY_CONF_UI,
+	PRINTMOREBTN_UI,
+	MOREBTN_UI,
+	COLORITEMS_UI,
+	BUTTONCONF_UI,
+	CURRENTCONF_UI,
+	CONSOLE_UI,
+	TMCSENSIVISITY_UI
 } DISP_STATE;
 
 typedef struct

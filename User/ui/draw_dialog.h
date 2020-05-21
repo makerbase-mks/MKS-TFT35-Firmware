@@ -25,6 +25,10 @@
 #define DIALOG_TYPE_FILE_LOADING			17//**
 
 #define DIALOG_TYPE_MAINBOAR_ERROR		18
+//lan
+#define DIALOG_TYPE_M500_SUCCESS			19
+#define DIALOG_TYPE_FILAMENT_NO_PRESS		20
+#define WIFI_ENABLE_TIPS 21
 
 #if defined(__cplusplus)
 extern "C" {     /* Make sure we have C-declarations in C++ programs */
@@ -32,6 +36,8 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 
 extern void draw_dialog(uint8_t type);
 extern void Clear_dialog(void);
+//lan
+extern void wifi_scan_handle();
 #if defined(__cplusplus)
 }    /* Make sure we have C-declarations in C++ programs */
 #endif

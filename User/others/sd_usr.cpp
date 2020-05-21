@@ -1086,10 +1086,12 @@ void get_sd_cfg()
 			if( tmp_index[strlen(">cfg_wifi_mode:")] == '1')
 			{
 				gCfgItems.wifi_mode_sel = 1;	
+				gCfgItems.wifi_scan = 0;
 			}
 			else
 			{
 				gCfgItems.wifi_mode_sel = 2;
+				gCfgItems.wifi_scan = 1;
 			}		
 			cfg_wifi_flag = 1;
 

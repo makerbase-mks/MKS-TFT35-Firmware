@@ -233,7 +233,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>10010100</state>
+          <state>11111110</state>
         </option>
         <option>
           <name>CCDebugInfo</name>
@@ -343,7 +343,7 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>2</state>
+          <state>3</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
@@ -352,7 +352,7 @@
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>2</state>
+          <state>3</state>
         </option>
         <option>
           <name>CompilerMisraRules98</name>
@@ -1960,6 +1960,12 @@
           <name>$PROJ_DIR$\..\User\others\fs_usr.cpp</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\User\others\Multi_language\Helvetica26.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\others\Multi_language\Helvetica36.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\User\others\ili9320.c</name>
         </file>
         <file>
@@ -2059,13 +2065,31 @@
           <name>$PROJ_DIR$\..\User\ui\draw_about.cpp</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_acceleration.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_advanced.cpp</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\User\ui\draw_babyStep.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_baud_rate.cpp</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\User\ui\draw_bind.cpp</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_buttonConf.cpp</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\User\ui\draw_change_speed.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_current_settings.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_CustomConf.cpp</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\User\ui\draw_dialog.cpp</name>
@@ -2074,10 +2098,16 @@
           <name>$PROJ_DIR$\..\User\ui\draw_disk.cpp</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_display_conf.cpp</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\User\ui\draw_extrusion.cpp</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\User\ui\draw_fan.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_filament_settings.cpp</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\User\ui\draw_filamentchange.cpp</name>
@@ -2086,7 +2116,19 @@
           <name>$PROJ_DIR$\..\User\ui\draw_FileTransfer_ui.cpp</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_firmware_type.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_keyboard.cpp</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\User\ui\draw_language.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_leveling_settings.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_levelingPara_config.cpp</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\User\ui\draw_log_ui.cpp</name>
@@ -2095,19 +2137,43 @@
           <name>$PROJ_DIR$\..\User\ui\draw_machine.cpp</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_machine_para.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_machine_settings.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_machine_type.cpp</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\User\ui\draw_main.cpp</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\User\ui\draw_manual_leveling.cpp</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_MaxFeedRate.cpp</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\User\ui\draw_more.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_MoreBtns.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_motor_settings.cpp</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\User\ui\draw_move_motor.cpp</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_number_key.cpp</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\User\ui\draw_operate.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_Pause_pos.cpp</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\User\ui\draw_pause_ui.cpp</name>
@@ -2125,6 +2191,9 @@
           <name>$PROJ_DIR$\..\User\ui\draw_printing_moremenu.cpp</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_printMoreBtn.cpp</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\User\ui\draw_ready_print.cpp</name>
         </file>
         <file>
@@ -2134,7 +2203,19 @@
           <name>$PROJ_DIR$\..\User\ui\draw_Sprayer.cpp</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_steps.cpp</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\User\ui\draw_temp_ui.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_temperature_settings.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_Tips.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_TMC_sensitivity.cpp</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\User\ui\draw_tool.cpp</name>
@@ -2144,6 +2225,12 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\User\ui\draw_wifi.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_wifi_list.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\User\ui\draw_XYZLevelPara.cpp</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\User\ui\draw_zero.cpp</name>

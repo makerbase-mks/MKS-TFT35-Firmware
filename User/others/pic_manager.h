@@ -125,6 +125,7 @@ extern void bindBmpFileData(const uint8_t **pBuf, uint8_t *pName);
 extern void Pic_Logo_Read(uint8_t *LogoName,uint8_t *Logo_Rbuff,uint32_t LogoReadsize);
 extern void default_view_Read(uint8_t *default_view_Rbuff,uint32_t default_view_Readsize);
 extern void flash_view_Read(uint8_t *flash_view_Rbuff,uint32_t flash_view_Readsize);
+extern void flash_reWriteInf(uint8_t* pBuffer, uint32_t WriteAddr, uint16_t NumByteToWrite);
 
 #if defined(__cplusplus)
 }

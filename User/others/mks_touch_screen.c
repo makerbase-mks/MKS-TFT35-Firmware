@@ -545,6 +545,7 @@ static uint8_t	TOUCH_PressValid(uint16_t _usX, uint16_t _usY)
 }
 
 #if 1
+extern uint8_t console_flag;
 void getTouchEvent(TOUCH_EVENT *pTouchEvent)
 {
 	uint32_t tmpTime, diffTime = 0;
@@ -561,7 +562,12 @@ void getTouchEvent(TOUCH_EVENT *pTouchEvent)
 		W25QXX_CS=1;
 		ADS7843_Rd_Addata(&x_touch, &y_touch);
 		if(TOUCH_PressValid(x_touch, y_touch))
-		{			
+		{	
+			if(console_flag!=0)
+			{
+				console_flag=2;			
+				return;
+			}
 			//if(abs(x - x_touch) > 50 || abs(y-y_touch) > 50)
 			if(abs(x - x_touch) > 30 || abs(y-y_touch) > 30)
 			{

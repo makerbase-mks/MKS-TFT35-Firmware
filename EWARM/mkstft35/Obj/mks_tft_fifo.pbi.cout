@@ -1,110 +1,110 @@
-"E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\User\uart_model\mks_tft_fifo.cpp"
+"E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\User\uart_model\mks_tft_fifo.cpp"
 -std=c++98
 -ferror-limit=100
 -include
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Inc\dump_define.h
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Inc\dump_define.h
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Inc
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Inc
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Middlewares\Third_Party\FatFs\src\drivers
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Middlewares\Third_Party\FatFs\src\drivers
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Middlewares\ST\STM32_USB_Host_Library\Core\Inc
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Middlewares\ST\STM32_USB_Host_Library\Core\Inc
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Middlewares\ST\STM32_USB_Host_Library\Class\MSC\Inc
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Middlewares\ST\STM32_USB_Host_Library\Class\MSC\Inc
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Middlewares\Third_Party\FatFs\src
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Middlewares\Third_Party\FatFs\src
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Drivers\CMSIS\Include
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Drivers\CMSIS\Include
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Drivers\STM32F4xx_MKS_Driver\Inc
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Drivers\STM32F4xx_MKS_Driver\Inc
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Drivers\STM32F4xx_MKS_Driver\Src
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Drivers\STM32F4xx_MKS_Driver\Src
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Drivers\libstmf4
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Drivers\libstmf4
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Drivers\libstmf4\include
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Drivers\libstmf4\include
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Middlewares\Repetier
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Middlewares\Repetier
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Middlewares\Repetier\inc_dumb
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Middlewares\Repetier\inc_dumb
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Middlewares\Repetier\inc_reserve
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Middlewares\Repetier\inc_reserve
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Middlewares\arduino\stm32\cores\arduino
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Middlewares\arduino\stm32\cores\arduino
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\User\ui
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\User\ui
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\User\others
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\User\others
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\User\uart_model
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\User\uart_model
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\User\others\Multi_language
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\User\others\Multi_language
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\User\others\QRENCODE
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\User\others\QRENCODE
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\EWARM\..\Middlewares\GUI
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\EWARM\..\Middlewares\GUI
 -I
-C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\CMSIS\Include
+D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\CMSIS\Include
 -I
-C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\inc
+D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\inc
 -I
-C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\inc\c
+D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\inc\c
 -I
-C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\inc\ecpp
+D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\inc\ecpp
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Inc
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Inc
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Drivers\STM32F4xx_HAL_Driver\Inc
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Drivers\STM32F4xx_HAL_Driver\Inc
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Middlewares\Third_Party\FatFs\src\drivers
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Middlewares\Third_Party\FatFs\src\drivers
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Middlewares\ST\STM32_USB_Host_Library\Core\Inc
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Middlewares\ST\STM32_USB_Host_Library\Core\Inc
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Middlewares\ST\STM32_USB_Host_Library\Class\MSC\Inc
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Middlewares\ST\STM32_USB_Host_Library\Class\MSC\Inc
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Drivers\CMSIS\Device\ST\STM32F4xx\Include
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Drivers\CMSIS\Device\ST\STM32F4xx\Include
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Middlewares\Third_Party\FatFs\src
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Middlewares\Third_Party\FatFs\src
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Drivers\CMSIS\Include
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Drivers\CMSIS\Include
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Drivers\STM32F4xx_MKS_Driver\Inc
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Drivers\STM32F4xx_MKS_Driver\Inc
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Drivers\STM32F4xx_MKS_Driver\Src
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Drivers\STM32F4xx_MKS_Driver\Src
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Drivers\libstmf4
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Drivers\libstmf4
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Drivers\libstmf4\include
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Drivers\libstmf4\include
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Middlewares\Repetier
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Middlewares\Repetier
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Middlewares\Repetier\inc_dumb
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Middlewares\Repetier\inc_dumb
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Middlewares\Repetier\inc_reserve
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Middlewares\Repetier\inc_reserve
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Middlewares\arduino\stm32\cores\arduino
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Middlewares\arduino\stm32\cores\arduino
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\User\ui
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\User\ui
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\User\others
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\User\others
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\User\uart_model
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\User\uart_model
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\User\others\Multi_language
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\User\others\Multi_language
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\User\others\QRENCODE
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\User\others\QRENCODE
 -I
-E:\code\TFT35_70_SVN\branches\TFT35_70_Source_Code\MKS-TFT35-Firmware- V1.0.5\Middlewares\GUI
+E:\gitproject\TFT35\DIY\MKS-TFT35-Firmware\Middlewares\GUI
 -I
-C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\CMSIS\Include
+D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\CMSIS\Include
 -DUSE_HAL_DRIVER=1
 -DSTM32F407xx=1
 -DSTM32F40_41xxx=1
@@ -316,8 +316,8 @@ C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\CMSIS\Include
 -D__HAS_LOCATED_WITH_INIT__=1
 -D__IAR_COMPILERBASE__=593666
 -D__SIGNED_CHARS__=1
--D__DATE__="Mar 17 2020"
--D__TIME__="11:13:38"
+-D__DATE__="May 21 2020"
+-D__TIME__="11:15:11"
 -D__STDC__=1
 -D__cplusplus=199711L
 -D__iar_extended_embedded_cplusplus=1
@@ -346,8 +346,8 @@ C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\CMSIS\Include
 -D__EDG_SYSV=0
 -D__EDG_ANSIC=1
 -D__EDG_CPP0X_IL_EXTENSIONS_SUPPORTED=1
--D_DLIB_CONFIG_FILE_HEADER_NAME="C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\INC\c\DLib_Config_Full.h"
--D_DLIB_CONFIG_FILE_STRING="C:\\Program Files (x86)\\IAR Systems\\Embedded Workbench 7.0\\arm\\INC\\c\\DLib_Config_Full.h"
+-D_DLIB_CONFIG_FILE_HEADER_NAME="D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\INC\c\DLib_Config_Full.h"
+-D_DLIB_CONFIG_FILE_STRING="D:\\Program Files (x86)\\IAR Systems\\Embedded Workbench 7.0\\arm\\INC\\c\\DLib_Config_Full.h"
 -D__VERSION__="IAR ANSI C/C++ Compiler V7.10.1.6676/W32 for ARM"
 -D__CODE_MEMORY_LIST1__()=__CODE_MEM_HELPER1__(__code, 0 )
 -D__CODE_MEMORY_LIST2__(_P1)=__CODE_MEM_HELPER2__(__code, 0 ,  _P1 )

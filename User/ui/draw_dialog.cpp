@@ -20,6 +20,21 @@
 #include "mks_cfg.h"
 #include "ff_gen_drv.h"
 #include "fatfs.h"
+#include "draw_ui.h"
+#include "wifi_module.h"
+#include "draw_wifi.h"
+#include "draw_wifi_list.h"
+#include "stm32f4xx_gpio.h"
+
+
+//lan
+#define PW_PORT_READ    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_0)
+#define PW_PORT_READ    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_0)
+#define MT_PORT_READ    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1)
+#define DT_PORT_READ    GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4)
+
+
+
 
 #ifndef GUI_FLASH
 #define GUI_FLASH
@@ -214,6 +229,34 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 						strcpy((char *)usart2Data.usart2Txbuf,"M221 S100\n");
 						usart2TxStart();
 						#endif
+
+
+
+						//lan	2020.5.11
+						if(gCfgItems.mask_PB0_PB1_Function != 1)
+						{
+							if(gCfgItems.sprayerNum == 2)
+							{
+//								if(((gCfgItems.filament_det2_level_flg == 0) && (PW_PORT_READ == 0)) || 
+//		    			    		((gCfgItems.filament_det1_level_flg == 0) && (MT_PORT_READ == 0)))
+								if((PW_PORT_READ == gCfgItems.filament_det2_level_flg) || 
+		    			    		(MT_PORT_READ == gCfgItems.filament_det1_level_flg))
+								{	
+	//                    			  Clear_dialog();
+	                    			  draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);  
+									  return;
+								}
+							}
+							else  
+							{
+//								if((gCfgItems.filament_det1_level_flg == 0) && (MT_PORT_READ == 0)) 
+								if( (MT_PORT_READ == gCfgItems.filament_det1_level_flg) )
+								{	
+	                    			  draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);  
+									  return;
+								}
+							}
+						}
 						
 						Get_Temperature_Flg = 1;
 						get_temp_flag = 1;
@@ -396,7 +439,118 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 					sprintf(buf,"G1 E-%d F%d\n",gCfgItems.filament_unload_length,gCfgItems.filament_unload_speed);
 					pushFIFO(&gcodeCmdTxFIFO,(uint8_t *)buf);
 					pushFIFO(&gcodeCmdTxFIFO, (uint8_t *)ABSOLUTE_COORD_COMMAN);						
-				}								
+				}	
+				//lan
+				else if(DialogType == DIALOG_TYPE_M500_SUCCESS)
+				{
+					draw_return_ui();				
+				}	
+				else if (DialogType == DIALOG_TYPE_FILAMENT_NO_PRESS)
+				{  
+						if( gCfgItems.sprayerNum == 2 )
+						{
+						   if((gCfgItems.filament_det2_level_flg == 1)&&(gCfgItems.filament_det1_level_flg == 1))
+						   {
+								if((PW_PORT_READ != gCfgItems.filament_det2_level_flg) && (MT_PORT_READ != gCfgItems.filament_det1_level_flg))
+								{
+										start_print_time();
+//										pause_resum = 1;
+										printerStaus = pr_working;//MKS_WORKING;
+										last_disp_state = DIALOG_UI;
+										if(from_flash_pic==1)
+											flash_preview_begin = 1;
+										else
+											default_preview_flg = 1;											
+										draw_printing();   
+								}
+								else
+								{
+										last_disp_state = DIALOG_UI;
+										draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);    
+								}
+						  }
+						  else if((gCfgItems.filament_det2_level_flg == 0)&&(gCfgItems.filament_det1_level_flg == 0))
+						  {
+						  		if((PW_PORT_READ != gCfgItems.filament_det2_level_flg) && (MT_PORT_READ != gCfgItems.filament_det1_level_flg))
+								{
+										start_print_time();
+//										pause_resum = 1;
+										printerStaus = pr_working;//MKS_WORKING;
+										last_disp_state = DIALOG_UI;
+										if(from_flash_pic==1)
+											flash_preview_begin = 1;
+										else
+											default_preview_flg = 1;											
+										draw_printing();   
+								}
+								else
+								{
+										last_disp_state = DIALOG_UI;
+										draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);    
+								}
+						  }
+  						  else if((gCfgItems.filament_det2_level_flg == 1)&&(gCfgItems.filament_det1_level_flg == 0))
+						  {
+						  		if((PW_PORT_READ != gCfgItems.filament_det2_level_flg) && (MT_PORT_READ != gCfgItems.filament_det1_level_flg))
+								{
+										start_print_time();
+//										pause_resum = 1;
+										printerStaus = pr_working;//MKS_WORKING;
+										last_disp_state = DIALOG_UI;
+										if(from_flash_pic==1)
+											flash_preview_begin = 1;
+										else
+											default_preview_flg = 1;											
+										draw_printing();   
+								}
+								else
+								{
+										last_disp_state = DIALOG_UI;
+										draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);    
+								}
+						  }
+  						  else if((gCfgItems.filament_det2_level_flg == 0)&&(gCfgItems.filament_det1_level_flg == 1))
+						  {
+						  		if((PW_PORT_READ != gCfgItems.filament_det2_level_flg) && (MT_PORT_READ != gCfgItems.filament_det1_level_flg))
+								{
+										start_print_time();
+//										pause_resum = 1;
+										printerStaus = pr_working;//MKS_WORKING;
+										last_disp_state = DIALOG_UI;
+										if(from_flash_pic==1)
+											flash_preview_begin = 1;
+										else
+											default_preview_flg = 1;											
+										draw_printing();   
+								}
+								else
+								{
+										last_disp_state = DIALOG_UI;
+										draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);    
+								}
+						  }
+					   }
+						else
+						{
+							if( MT_PORT_READ != gCfgItems.filament_det1_level_flg )
+							{
+								start_print_time();
+								printerStaus = pr_working;//MKS_WORKING;
+								last_disp_state = DIALOG_UI;
+								if(from_flash_pic==1)
+									flash_preview_begin = 1;
+								else
+									default_preview_flg = 1;									
+								draw_printing();   
+							}
+							else 
+							{
+								last_disp_state = DIALOG_UI;
+								draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);    
+							}
+						}
+						
+				}	
 				else
 				{
 					if(DialogType == DIALOG_TYPE_MAINBOAR_ERROR)
@@ -408,6 +562,7 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 					}
 					draw_return_ui();
 				}
+				
 			}
 			else if(pMsg->hWinSrc == buttonCancle.btnHandle)
 			{			
@@ -460,6 +615,15 @@ void draw_dialog(uint8_t type)
 			return;
 		}
 #endif
+	//lan
+	if((DialogType == DIALOG_TYPE_M500_SUCCESS)
+		&& (type == DIALOG_TYPE_M500_SUCCESS)
+		&&(disp_state == DIALOG_UI) )
+		{
+			return;
+		}
+
+
 
 	if(disp_state_stack._disp_state[disp_state_stack._disp_index] != DIALOG_UI)
 	{
@@ -593,6 +757,46 @@ void draw_dialog(uint8_t type)
 			BUTTON_SetText(buttonOk.btnHandle, print_file_dialog_menu.confirm);
 		}
 #endif
+		//lan
+		else if(DialogType == DIALOG_TYPE_M500_SUCCESS)
+		{
+			hStopDlgWnd = WM_CreateWindow(0, titleHeight, LCD_WIDTH, imgHeight, WM_CF_SHOW, cbDlgWin, 0);
+			printStopDlgText = TEXT_CreateEx(0,0, LCD_WIDTH, 90, hStopDlgWnd, WM_CF_SHOW, TEXT_CF_LEFT, alloc_win_id(), " ");
+			TEXT_SetTextColor(printStopDlgText, gCfgItems.title_color);
+			TEXT_SetTextAlign(printStopDlgText, GUI_TA_VCENTER | GUI_TA_HCENTER);		
+			
+			buttonOk.btnHandle = BUTTON_CreateEx((LCD_WIDTH-140)/2, (imgHeight-40)/2, 140, 50,hStopDlgWnd, BUTTON_CF_SHOW, 0, alloc_win_id());
+			if(strlen(cmd_code)>40)
+			{
+				memset((char*)codebuff,'\0',sizeof(codebuff));
+				strncpy((char*)codebuff,cmd_code,40);
+				codebuff[40]='\n';
+				strcat((char*)codebuff,&cmd_code[40]);
+				TEXT_SetText(printStopDlgText, (char*)codebuff);	
+			}
+			else
+			{
+				//chen 11.7
+				memset((char*)codebuff,'\0',sizeof(codebuff));
+				strncpy((char*)codebuff,cmd_code,40);
+				
+				TEXT_SetText(printStopDlgText, (char*)codebuff);
+			}		
+			BUTTON_SetText(buttonOk.btnHandle, print_file_dialog_menu.confirm);
+		}
+		//lan
+		else if(DialogType == WIFI_ENABLE_TIPS)
+		{
+			hStopDlgWnd = WM_CreateWindow(0, titleHeight, LCD_WIDTH, imgHeight, WM_CF_SHOW, cbDlgWin, 0);
+			buttonCancle.btnHandle= BUTTON_CreateEx((LCD_WIDTH-120)/2,(imgHeight-60)/2,120,60,hStopDlgWnd, BUTTON_CF_SHOW, 0, alloc_win_id());
+			printStopDlgText = TEXT_CreateEx(0,(imgHeight-40)/2-90, LCD_WIDTH, 60, hStopDlgWnd, WM_CF_SHOW, GUI_TA_VCENTER | GUI_TA_HCENTER,	alloc_win_id(), " ");
+
+			TEXT_SetBkColor(printStopDlgText, gCfgItems.background_color);
+			TEXT_SetTextColor(printStopDlgText, gCfgItems.title_color);
+			
+			TEXT_SetText(printStopDlgText, print_file_dialog_menu.wifi_enable_tips);
+			BUTTON_SetText(buttonCancle.btnHandle, print_file_dialog_menu.cancle);	
+		}
 		else		
 		{
 			hStopDlgWnd = WM_CreateWindow(0, titleHeight, LCD_WIDTH, imgHeight, WM_CF_SHOW, cbDlgWin, 0);
@@ -627,7 +831,12 @@ void draw_dialog(uint8_t type)
 				PROGBAR_SetBarColor(FilamentBar, 0, GUI_GREEN);
 				PROGBAR_SetValue(FilamentBar,filament_rate);
 				PROGBAR_SetText(FilamentBar," ");
-			}				
+			} 
+			//lan
+			else if(DialogType == DIALOG_TYPE_FILAMENT_NO_PRESS)
+            {
+                buttonOk.btnHandle= BUTTON_CreateEx((LCD_WIDTH-140)/2,(imgHeight-40)/2,140, 50,hStopDlgWnd, BUTTON_CF_SHOW, 0, alloc_win_id());
+            }	
 			else
 			{
 				buttonOk.btnHandle= BUTTON_CreateEx((LCD_WIDTH-320)/2,(imgHeight-40)/2,140,50,hStopDlgWnd, BUTTON_CF_SHOW, 0, alloc_win_id());
@@ -745,6 +954,12 @@ void draw_dialog(uint8_t type)
 				TEXT_SetText(printStopDlgText, filament_menu.filament_dialog_unload_completed);
 				BUTTON_SetText(buttonOk.btnHandle, print_file_dialog_menu.confirm);		
 			}
+			//lan
+            else if(DialogType == DIALOG_TYPE_FILAMENT_NO_PRESS)
+            {
+    			TEXT_SetText(printStopDlgText, print_file_dialog_menu.filament_no_press);
+    			BUTTON_SetText(buttonOk.btnHandle, print_file_dialog_menu.confirm);	            
+            }
 		}
 
 		
@@ -861,6 +1076,44 @@ void filament_dialog_handle(void)
 			}				
 	
 }
+
+//lan
+uint8_t command_send_flag;
+void wifi_scan_handle()
+{
+	char buf[6]={0};
+	
+	 if(DialogType == WIFI_ENABLE_TIPS)
+	 {
+	 	//if(M997_Receive_times >= 2)
+	 	if(command_send_flag == 1)
+		{
+			/*buf[0] = 0xA5;
+			buf[1] = 0x07;
+			buf[2] = 0x00;
+			buf[3] = 0x00;
+			buf[4] = 0xFC;
+			raw_send_to_wifi(buf, 5);*/
+			if(wifi_link_state == WIFI_CONNECTED && wifiPara.mode != 0x01)
+			{
+				//wifi_list.nameIndex = wifi_list.nameIndex + i;
+				last_disp_state = PRINT_READY_UI;
+				Clear_ready_print();
+				//draw_WifiConnected();
+				draw_Wifi();
+			}
+			else
+			{
+				last_disp_state = DIALOG_UI;
+				Clear_dialog();
+				draw_Wifi_list();
+			}
+			
+		}
+	 }
+}
+
+
 
 
 void Clear_dialog()
