@@ -24,10 +24,11 @@ typedef enum
 extern KEYBOARD_STYPE keyboard_stype;
 
 
-#define  NUMBER_OF_PASSWORD 16
+#define  NUMBER_OF_PASSWORD 50//16
 typedef struct
 {
 	uint8_t cnt;
+	uint8_t dis_cnt;
 	uint8_t password_value[NUMBER_OF_PASSWORD+2];
 	uint8_t password_disp[NUMBER_OF_PASSWORD+2];
 	uint8_t timer;

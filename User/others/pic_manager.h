@@ -92,7 +92,7 @@
 //自动调平指令存储地址
 #define BUTTON_AUTOLEVELING_ADDR		BUTTON_MOREFUNC7_ADDR+201
 
-#define WIFI_MODE_TYPE_ADDR	BUTTON_AUTOLEVELING_ADDR+201
+#define WIFI_MODE_TYPE_ADDR	BUTTON_AUTOLEVELING_ADDR+1
 
 
 
@@ -120,7 +120,12 @@ extern "C" {
 #endif
 
 extern void PicMsg_Init(void);
+#if 1
 extern void Pic_Read(uint8_t *Pname,uint8_t *P_Rbuff);
+#else
+extern void Pic_Read(uint8_t *Pname,uint8_t *P_Rbuff,uint8_t part,uint8_t allcnt);
+#endif
+
 extern void bindBmpFileData(const uint8_t **pBuf, uint8_t *pName);
 extern void Pic_Logo_Read(uint8_t *LogoName,uint8_t *Logo_Rbuff,uint32_t LogoReadsize);
 extern void default_view_Read(uint8_t *default_view_Rbuff,uint32_t default_view_Readsize);

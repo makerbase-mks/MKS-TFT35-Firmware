@@ -894,20 +894,20 @@ static void wifi_gcode_exec(uint8_t *cmd_line)
 						int index = 0;
 						char *det_pos;
 
-						if(tmpStr == 0)
-						{
-							gCfgItems.fileSysType = FILE_SYS_SD;	
-							send_to_wifi("Begin file list\r\n", strlen("Begin file list\r\n"));
-							#if tan
-							get_file_list("1:/");
-							#else
-							get_file_list(SD_Path);
-							#endif
-							send_to_wifi("End file list\r\n", strlen("End file list\r\n"));
-
-							send_to_wifi("ok\r\n", strlen("ok\r\n"));
-							break;
-						}
+//						if(tmpStr == 0)
+//						{
+//							gCfgItems.fileSysType = FILE_SYS_SD;	
+//							send_to_wifi("Begin file list\r\n", strlen("Begin file list\r\n"));
+//							#if tan
+//							get_file_list("1:/");
+//							#else
+//							get_file_list(SD_Path);
+//							#endif
+//							send_to_wifi("End file list\r\n", strlen("End file list\r\n"));
+//
+//							send_to_wifi("ok\r\n", strlen("ok\r\n"));
+//							break;
+//						}
 
 						while(tmpStr[index] == ' ')
 							index++;
@@ -1761,6 +1761,69 @@ static void gcode_msg_handle(uint8_t * msg, uint16_t msgLen)
 	}
 }
 
+//sean 2020.02.17
+//start
+void utf8_2_gbk(uint8_t *source,uint8_t Len)
+{
+	uint8_t  i=0,char_i=0,char_byte_num=0;
+	uint16_t  u16_h,u16_m,u16_l,u16_value;
+	uint8_t FileName_unicode[30];
+	
+ 	memset(FileName_unicode, 0, sizeof(FileName_unicode));
+	
+	while(1)
+	{
+		char_byte_num = source[i] & 0xF0;
+		if(source[i] < 0X80)
+		{
+			//ASCII --1byte
+			FileName_unicode[char_i] = source[i];
+			i += 1;
+			char_i += 1;
+		}
+		else if(char_byte_num == 0XC0 || char_byte_num == 0XD0)
+		{
+			//--2byte
+			
+			u16_h = (((uint16_t)source[i] <<8) & 0x1f00) >> 2;
+			u16_l = ((uint16_t)source[i+1] & 0x003f);
+			u16_value = (u16_h | u16_l);
+			u16_value=ff_convert(u16_value,0);
+			FileName_unicode[char_i] = (uint8_t)((u16_value & 0xff00) >> 8);
+			FileName_unicode[char_i + 1] = (uint8_t)(u16_value & 0x00ff);
+			i += 2;
+			char_i += 2;
+		}
+		else if(char_byte_num == 0XE0)
+		{
+			//--3byte
+			u16_h = (((uint16_t)source[i] <<8 ) & 0x0f00) << 4;
+			u16_m = (((uint16_t)source[i+1] << 8) & 0x3f00) >> 2;
+			u16_l = ((uint16_t)source[i+2] & 0x003f);
+			u16_value = (u16_h | u16_m | u16_l);
+			u16_value=ff_convert(u16_value,0);
+			FileName_unicode[char_i] = (uint8_t)((u16_value & 0xff00) >> 8);
+			FileName_unicode[char_i + 1] = (uint8_t)(u16_value & 0x00ff);
+			i += 3;
+			char_i += 2;
+		}
+		else if(char_byte_num == 0XF0)
+		{
+			//--4byte ²»³£¼û
+			i += 4;
+			//char_i += 3;
+		}
+		else
+		{
+			break;
+		}
+		if(i >= Len || i >= 255)break;
+	}
+	//memset(source, 0, sizeof(source));
+	memcpy(source, FileName_unicode, sizeof(FileName_unicode));
+}
+//end
+
 char saveFilePath[50];
 
 static void file_first_msg_handle(uint8_t * msg, uint16_t msgLen)
@@ -1778,6 +1841,8 @@ static void file_first_msg_handle(uint8_t * msg, uint16_t msgLen)
 	memset(file_writer.saveFileName, 0, sizeof(file_writer.saveFileName));
 
 	memcpy(file_writer.saveFileName, msg + 5, fileNameLen);
+	//lan    deal with wifi transmit chinese name gcode file
+	utf8_2_gbk(file_writer.saveFileName,fileNameLen);
 
 	memset(file_writer.write_buf, 0, sizeof(file_writer.write_buf));
 
@@ -1792,6 +1857,7 @@ static void file_first_msg_handle(uint8_t * msg, uint16_t msgLen)
 		{
 			sprintf((char *)saveFilePath, "1:/%s", file_writer.saveFileName);
 			//SD_Initialize();
+			MX_SDIO_SD_Init();
 			FATFS_LinkDriver_sd(&SD_Driver, SD_Path);
 			f_mount(&fs, (TCHAR const*)SD_Path, 0);
 		}
@@ -2964,15 +3030,6 @@ void wifi_rcv_handle()
 				}
 				getDataF = 1;
 			}
-			//lan
-			#if 0
-			if(need_ok_later &&  (commands_in_queue < BUFSIZE))
-			{
-				need_ok_later = false;
-				send_to_wifi("ok\r\n", strlen("ok\r\n"));   
-			}
-			#endif
-					
 		}
 
 		if(getDataF == 1)

@@ -43,6 +43,24 @@ static void btnHandle_rest()
 	Z_error_default.btnHandle = 0;
 	
 }
+//lan
+static void disp_PowerOff_type(void)
+{
+	switch(gCfgItems.insert_det_module)
+	{
+		case 0:
+			BUTTON_SetText(PowerOffDet_PWC.btnHandle, "PWC");
+			break;
+		case 1:
+			BUTTON_SetText(PowerOffDet_PWC.btnHandle, "DET");
+			break;		
+		case 2:
+			BUTTON_SetText(PowerOffDet_PWC.btnHandle, "UPS");
+			break;
+		default:
+			break;
+	}
+}
 
 static void cbAdvancedWin(WM_MESSAGE * pMsg) {
 
@@ -98,16 +116,31 @@ static void cbAdvancedWin(WM_MESSAGE * pMsg) {
                 }                
     			else if(pMsg->hWinSrc == PowerOffDet_PWC.btnHandle)
     			{		
-					if(gCfgItems.insert_det_module==0)
+//					if(gCfgItems.insert_det_module==0)
+//					{
+//						gCfgItems.insert_det_module = 1;	
+//						BUTTON_SetText(PowerOffDet_PWC.btnHandle, "DET");						
+//					}
+//					else 
+//					{
+//						gCfgItems.insert_det_module = 0;
+//						BUTTON_SetText(PowerOffDet_PWC.btnHandle, "PWC");						
+//					}
+					switch (gCfgItems.insert_det_module)
 					{
-						gCfgItems.insert_det_module = 1;	
-						BUTTON_SetText(PowerOffDet_PWC.btnHandle, "DET");						
+						case 0:
+							gCfgItems.insert_det_module = 1;
+							break;
+						case 1:
+							gCfgItems.insert_det_module = 2;
+							break;
+						case 2:
+							gCfgItems.insert_det_module = 0;
+							break;
+						default:
+							break;
 					}
-					else 
-					{
-						gCfgItems.insert_det_module = 0;
-						BUTTON_SetText(PowerOffDet_PWC.btnHandle, "PWC");						
-					}
+					disp_PowerOff_type();
 					HAL::AT24CXX_Write(BAK_INSERT_MODULE_ADDR,(uint8_t *)&gCfgItems.insert_det_module,1);	
     			}
     			else if(pMsg->hWinSrc == PowerOff_Sel.btnHandle)
@@ -351,8 +384,7 @@ void draw_Advanced()
         BUTTON_SetBmpFileName(button_next.btnHandle, "bmp_pic70x40.bin",1); 
     
         BUTTON_SetBitmapEx(button_next.btnHandle, 0, &bmp_struct70X40,0, 0);
-        
-
+		disp_PowerOff_type();
     }
     else
     {
@@ -438,11 +470,12 @@ void draw_Advanced()
         {
             BUTTON_SetText(PowerOffDet_text.btnHandle, machine_menu.PwrOffDection);
 			
-			if(gCfgItems.insert_det_module==1)
-			 BUTTON_SetText(PowerOffDet_PWC.btnHandle, "DET");
-			else 
-			  BUTTON_SetText(PowerOffDet_PWC.btnHandle, "PWC");
-			
+//			if(gCfgItems.insert_det_module==1)
+//				
+//			 BUTTON_SetText(PowerOffDet_PWC.btnHandle, "DET");
+//			else 
+//			  BUTTON_SetText(PowerOffDet_PWC.btnHandle, "PWC");
+
             BUTTON_SetText(PowerOff_text.btnHandle, machine_menu.PwrOffAfterPrint);
             BUTTON_SetText(HaveUPS_text.btnHandle, machine_menu.HaveUps);
             BUTTON_SetText(button_next.btnHandle,machine_menu.next);

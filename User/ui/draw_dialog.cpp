@@ -698,30 +698,32 @@ void draw_dialog(uint8_t type)
 				
 				buttonOk.btnHandle= BUTTON_CreateEx((LCD_WIDTH-140)/2,(imgHeight-40)/2, 140, 50,hStopDlgWnd, BUTTON_CF_SHOW, 0, alloc_win_id());
 				
-				strcpy(buf, DIALOG_UPLOAD_FINISH_EN);
-				_index = strlen(buf);
-				buf[_index] = '\n';
-				_index++;
-				strcat(buf, DIALOG_UPLOAD_SIZE_EN);
-				
-				_index = strlen(buf);
-				buf[_index] = ':';
-				_index++;
-				sprintf(&buf[_index], " %.1d KBytes\n", upload_size / 1024);
+//				strcpy(buf, DIALOG_UPLOAD_FINISH_EN);
+//				_index = strlen(buf);
+//				buf[_index] = '\n';
+//				_index++;
+//				strcat(buf, DIALOG_UPLOAD_SIZE_EN);
+//				
+//				_index = strlen(buf);
+//				buf[_index] = ':';
+//				_index++;
+//				sprintf(&buf[_index], " %.1d KBytes\n", upload_size / 1024);
+//
+//				strcat(buf, DIALOG_UPLOAD_TIME_EN);
+//				_index = strlen(buf);
+//				buf[_index] = ':';
+//				_index++;
+//				sprintf(&buf[_index], " %d s\n", upload_time);
+//				
+//				strcat(buf, DIALOG_UPLOAD_SPEED_EN);
+//				_index = strlen(buf);
+//				buf[_index] = ':';
+//				_index++;
+//				sprintf(&buf[_index], " %d KBytes/s\n", upload_size / upload_time / 1024);				
+//				
+//				TEXT_SetText(printStopDlgText, buf);
+				TEXT_SetText(printStopDlgText, DIALOG_UPLOAD_FINISH_EN);
 
-				strcat(buf, DIALOG_UPLOAD_TIME_EN);
-				_index = strlen(buf);
-				buf[_index] = ':';
-				_index++;
-				sprintf(&buf[_index], " %d s\n", upload_time);
-				
-				strcat(buf, DIALOG_UPLOAD_SPEED_EN);
-				_index = strlen(buf);
-				buf[_index] = ':';
-				_index++;
-				sprintf(&buf[_index], " %d KBytes/s\n", upload_size / upload_time / 1024);				
-				
-				TEXT_SetText(printStopDlgText, buf);
 				BUTTON_SetText(buttonOk.btnHandle, "OK");
 			
 			}

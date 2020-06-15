@@ -197,11 +197,16 @@ static void cbKeyboardWin(WM_MESSAGE * pMsg) {
 					BUTTON_SetBmpFileName(buttondel2.btnHandle, "bmp_backspace_white.bin",1);
                            		BUTTON_SetBitmapEx(buttondel2.btnHandle, 0, &bmp_struct_32x21,(FIRST_LINE_WIDTH-32)/2, (KEY_HEIGHT-21)/2);
 					if(key_value_calc.cnt > 0)
-			              {   
-			                   key_value_calc.cnt--;  
-			              }
-		                	key_value_calc.password_value[key_value_calc.cnt] = 0;
-					key_value_calc.password_disp[key_value_calc.cnt] = 0;
+					  {   
+							 key_value_calc.dis_cnt--;
+							if(key_value_calc.dis_cnt != 25 )
+						   key_value_calc.cnt--;  
+					  }
+					if(key_value_calc.dis_cnt <= 25 )
+						BUTTON_SetTextAlign(buttonPassword.btnHandle,GUI_TA_LEFT|GUI_TA_VCENTER);
+					if(key_value_calc.dis_cnt != 25 )
+					key_value_calc.password_value[key_value_calc.cnt] = 0;		
+					key_value_calc.password_disp[key_value_calc.dis_cnt] = 0;
 					if(key_value_calc.cnt  == 0)
 					{
 //						strncpy((char *)key_value_calc.password_disp,keyboard_menu.password,sizeof(key_value_calc.password_disp));
@@ -224,14 +229,22 @@ static void cbKeyboardWin(WM_MESSAGE * pMsg) {
 					{
 						key_value_calc.timer = TIMER_STOP;
 						key_value_calc.timer_count = 0;
-						if(key_value_calc.cnt > 0)
-						{
+//						if(key_value_calc.cnt > 0)
+//						{
 //							key_value_calc.password_disp[key_value_calc.cnt - 1] = (uint8_t)TEXT_PIONT_BOLD;
-						}
+//						}
 						key_value_calc.password_value[key_value_calc.cnt] = ' ';
-						key_value_calc.password_disp[key_value_calc.cnt] = ' ';
+//						key_value_calc.password_disp[key_value_calc.cnt] = ' ';
+						// handle display of symbol '\n' 
+						if (key_value_calc.cnt == 24)
+						{
+							key_value_calc.password_disp[key_value_calc.dis_cnt++] = '\n';
+							BUTTON_SetTextAlign(buttonPassword.btnHandle,GUI_TA_LEFT|GUI_TA_TOP);							
+						}
+						key_value_calc.password_disp[key_value_calc.dis_cnt] = ' ';
 						BUTTON_SetText(buttonPassword.btnHandle, (const char *)key_value_calc.password_disp);
                     				key_value_calc.cnt++;
+									key_value_calc.dis_cnt++;
 						key_value_calc.timer = TIMER_START;
 					}
 		              }
@@ -301,14 +314,23 @@ static void cbKeyboardWin(WM_MESSAGE * pMsg) {
 									{
 										key_value_calc.timer = TIMER_STOP;
 										key_value_calc.timer_count = 0;
-										if(key_value_calc.cnt > 0)
-										{
-//											key_value_calc.password_disp[key_value_calc.cnt - 1] = (uint8_t)TEXT_PIONT_BOLD;
-										}
+//										if(key_value_calc.cnt > 0)
+//										{
+////											key_value_calc.password_disp[key_value_calc.cnt - 1] = (uint8_t)TEXT_PIONT_BOLD;
+//										}
 										key_value_calc.password_value[key_value_calc.cnt] = 'A' + i;
-										key_value_calc.password_disp[key_value_calc.cnt] = 'A' + i;
+//										key_value_calc.password_disp[key_value_calc.dis_cnt] = 'A' + i;
+										//lan handle the display of symbol '\n'
+										if (key_value_calc.cnt == 24)
+										{
+											key_value_calc.password_disp[key_value_calc.dis_cnt++] = '\n';
+											BUTTON_SetTextAlign(buttonPassword.btnHandle,GUI_TA_LEFT|GUI_TA_TOP);											
+										}
+										key_value_calc.password_disp[key_value_calc.dis_cnt] = 'A' + i;	
+										
 										BUTTON_SetText(buttonPassword.btnHandle, (const char *)key_value_calc.password_disp);
 				                    				key_value_calc.cnt++;
+				                    				key_value_calc.dis_cnt++;												
 										key_value_calc.timer = TIMER_START;
 									}
 									break;
@@ -324,14 +346,24 @@ static void cbKeyboardWin(WM_MESSAGE * pMsg) {
 									{
 										key_value_calc.timer = TIMER_STOP;
 										key_value_calc.timer_count = 0;
-										if(key_value_calc.cnt > 0)
-										{
-//											key_value_calc.password_disp[key_value_calc.cnt - 1] = (uint8_t)TEXT_PIONT_BOLD;
-										}
+//										if(key_value_calc.cnt > 0)
+//										{
+////											key_value_calc.password_disp[key_value_calc.cnt - 1] = (uint8_t)TEXT_PIONT_BOLD;
+//										}
 										key_value_calc.password_value[key_value_calc.cnt] = 'a' + i;
-										key_value_calc.password_disp[key_value_calc.cnt] = 'a' + i;
+//										key_value_calc.password_disp[key_value_calc.cnt] = 'a' + i;
+										//lan 
+										if (key_value_calc.cnt == 24)
+										{
+											key_value_calc.password_disp[key_value_calc.dis_cnt++] = '\n';
+											BUTTON_SetTextAlign(buttonPassword.btnHandle,GUI_TA_LEFT|GUI_TA_TOP);				
+										}		
+										key_value_calc.password_disp[key_value_calc.dis_cnt] = 'a' + i;
+										
 										BUTTON_SetText(buttonPassword.btnHandle, (const char *)key_value_calc.password_disp);
 				                    				key_value_calc.cnt++;
+				                    				key_value_calc.dis_cnt++;
+													
 										key_value_calc.timer = TIMER_START;
 									}
 									break;
@@ -356,9 +388,18 @@ static void cbKeyboardWin(WM_MESSAGE * pMsg) {
 //											key_value_calc.password_disp[key_value_calc.cnt - 1] = (uint8_t)TEXT_PIONT_BOLD;
 										}
 										key_value_calc.password_value[key_value_calc.cnt] = (uint8_t)digital_key_value[i];
-										key_value_calc.password_disp[key_value_calc.cnt] = (uint8_t)digital_key_value[i];
+//										key_value_calc.password_disp[key_value_calc.cnt] = (uint8_t)digital_key_value[i];
+
+										if (key_value_calc.cnt == 24)
+										{
+											key_value_calc.password_disp[key_value_calc.dis_cnt++] = '\n';
+											BUTTON_SetTextAlign(buttonPassword.btnHandle,GUI_TA_LEFT|GUI_TA_TOP);
+										}
+										key_value_calc.password_disp[key_value_calc.dis_cnt] = (uint8_t)digital_key_value[i];
+										
 										BUTTON_SetText(buttonPassword.btnHandle, (const char *)key_value_calc.password_disp);
 				                    				key_value_calc.cnt++;
+													key_value_calc.dis_cnt++;
 										key_value_calc.timer = TIMER_START;
 									}
 									break;
@@ -378,14 +419,23 @@ static void cbKeyboardWin(WM_MESSAGE * pMsg) {
 									{
 										key_value_calc.timer = TIMER_STOP;
 										key_value_calc.timer_count = 0;
-										if(key_value_calc.cnt > 0)
-										{
-//											key_value_calc.password_disp[key_value_calc.cnt - 1] = (uint8_t)TEXT_PIONT_BOLD;
-										}
+//										if(key_value_calc.cnt > 0)
+//										{
+////											key_value_calc.password_disp[key_value_calc.cnt - 1] = (uint8_t)TEXT_PIONT_BOLD;
+//										}
 										key_value_calc.password_value[key_value_calc.cnt] = (uint8_t)symbol_key_value[i];
-										key_value_calc.password_disp[key_value_calc.cnt] = (uint8_t)symbol_key_value[i];
+//										key_value_calc.password_disp[key_value_calc.cnt] = (uint8_t)symbol_key_value[i];
+										if (key_value_calc.cnt == 24)
+										{
+											key_value_calc.password_disp[key_value_calc.dis_cnt++] = '\n';		
+											BUTTON_SetTextAlign(buttonPassword.btnHandle,GUI_TA_LEFT|GUI_TA_TOP);
+										}
+										key_value_calc.password_disp[key_value_calc.dis_cnt] = (uint8_t)digital_key_value[i];
+								
 										BUTTON_SetText(buttonPassword.btnHandle, (const char *)key_value_calc.password_disp);
 				                    				key_value_calc.cnt++;
+				                    				key_value_calc.dis_cnt++;
+													
 										key_value_calc.timer = TIMER_START;
 									}
 									break;
@@ -498,7 +548,8 @@ void draw_Keyboard()
     
     buttonRet.btnHandle = BUTTON_CreateEx((KEY_WIDTH+1)*6,VALUE_DISP_HEIGHT+1+KEY_HEIGHT*4+1*4,KEY_WIDTH,KEY_HEIGHT, hKeyboardWnd, BUTTON_CF_SHOW, 0, alloc_win_id());
 
-    buttonJoint.btnHandle = BUTTON_CreateEx(LCD_WIDTH-80,10,90,40, hKeyboardWnd, BUTTON_CF_SHOW, 0, 310);
+//    buttonJoint.btnHandle = BUTTON_CreateEx(LCD_WIDTH-80,10,90,40, hKeyboardWnd, BUTTON_CF_SHOW, 0, 310);
+    buttonJoint.btnHandle = BUTTON_CreateEx((FIRST_LINE_WIDTH+1)*4,0,95,60, hKeyboardWnd, BUTTON_CF_SHOW, 0, 310);
 
     BUTTON_SetBkColor(buttonRet.btnHandle, BUTTON_CI_PRESSED, gCfgItems.background_color);
     BUTTON_SetBkColor(buttonRet.btnHandle, BUTTON_CI_UNPRESSED, gCfgItems.background_color);
@@ -532,13 +583,14 @@ void draw_Keyboard()
 	else 
 		BUTTON_SetText(buttonJoint.btnHandle, keyboard_menu.apply);
 
-    buttonPassword.btnHandle = BUTTON_CreateEx(10,10,LCD_WIDTH-100,40, hKeyboardWnd, BUTTON_CF_SHOW, 0, alloc_win_id());
+//    buttonPassword.btnHandle = BUTTON_CreateEx(10,10,LCD_WIDTH-100,40, hKeyboardWnd, BUTTON_CF_SHOW, 0, alloc_win_id());
+    buttonPassword.btnHandle = BUTTON_CreateEx(0,0,(FIRST_LINE_WIDTH+1)*4-1,60, hKeyboardWnd, BUTTON_CF_SHOW, 0, alloc_win_id());	
     BUTTON_SetBkColor(buttonPassword.btnHandle, BUTTON_CI_PRESSED, gCfgItems.background_color);
     BUTTON_SetBkColor(buttonPassword.btnHandle, BUTTON_CI_UNPRESSED, gCfgItems.background_color);
     BUTTON_SetTextColor(buttonPassword.btnHandle, BUTTON_CI_PRESSED, 0x3f3f3f);
     BUTTON_SetTextColor(buttonPassword.btnHandle, BUTTON_CI_UNPRESSED,0x3f3f3f);
     BUTTON_SetTextAlign(buttonPassword.btnHandle,GUI_TA_LEFT|GUI_TA_VCENTER);
-    BUTTON_SetFont(buttonPassword.btnHandle,&GUI_FontHelvetica36);
+    BUTTON_SetFont(buttonPassword.btnHandle,&GUI_FontHelvetica26);
 //    BUTTON_SetText(buttonPassword.btnHandle, keyboard_menu.password);
 	disp_KeyValue();
     BUTTON_SetBmpFileName(buttonPassword.btnHandle,NULL,1);
@@ -646,6 +698,7 @@ void draw_Keyboard()
 		BUTTON_SetText(buttonkey[3].btnHandle, "3");*/
 		
 	key_value_calc.cnt = 0;
+	key_value_calc.dis_cnt = 0;	
 	memset(key_value_calc.password_value,0,sizeof(key_value_calc.password_value));
 	memset(key_value_calc.password_disp,0,sizeof(key_value_calc.password_disp));
 	keyboard_stype = UPPER_CASE_LETTER;

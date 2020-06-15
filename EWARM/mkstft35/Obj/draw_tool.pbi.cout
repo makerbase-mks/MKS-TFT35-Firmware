@@ -316,8 +316,8 @@ D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\CMSIS\Include
 -D__HAS_LOCATED_WITH_INIT__=1
 -D__IAR_COMPILERBASE__=593666
 -D__SIGNED_CHARS__=1
--D__DATE__="May 21 2020"
--D__TIME__="11:16:17"
+-D__DATE__="Jun 15 2020"
+-D__TIME__="09:50:29"
 -D__STDC__=1
 -D__cplusplus=199711L
 -D__iar_extended_embedded_cplusplus=1

@@ -593,7 +593,12 @@ void udiskFileR(FIL *srcfp1)		//读取u盘文件，写入udiskBuffer
 								GUI_DispStringAt("打印完成! 正在关机...", 300, 200);
 							}
 							#endif
-							GUI_DispStringAt(common_menu.close_machine_tips, 300, 200);
+//							GUI_DispStringAt(common_menu.close_machine_tips, 300, 200);
+							#if defined(TFT70)
+							GUI_DispStringAt(common_menu.close_machine_tips, 320, 210); 
+							#else defined(TFT35)
+							GUI_DispStringAt(common_menu.close_machine_tips, 190, 140);
+                                                        #endif
 							close_fail_flg = 1;
 							close_fail_cnt = 0;
 							while(close_fail_flg);

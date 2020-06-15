@@ -866,7 +866,7 @@ extern TemperatureSettings_menu_def TemperatureSettings_menu;
 #define HOME_ALL_TEXT				"All"
 
 #define ABOUT_TYPE_TEXT				"MKS TFT"
-#define ABOUT_VERSION_TEXT			"1.0.6"
+#define ABOUT_VERSION_TEXT			"1.0.7"
 //#define ABOUT_WIFI_TEXT				"WiFi:"
 
 #define FAN_OPEN_TEXT				"100%"

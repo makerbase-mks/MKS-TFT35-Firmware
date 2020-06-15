@@ -724,7 +724,7 @@ void printer_init()
 	gCfgItems.MoreItem_pic_cnt = 0;
 
 	/*wifi_cfg*/
-	gCfgItems.wifi_mode_sel = 1;//1?aAP?￡ê?￡??????aclient?￡ê?￡???è??aAP?￡ê??￡
+	gCfgItems.wifi_mode_sel = 0;//1?aAP?￡ê?￡??????aclient?￡ê?￡???è??aAP?￡ê??￡
 	
 	//**memset(wifiPara, 0, sizeof(wifiPara));
 	//**memset(ipPara, 0, sizeof(ipPara));
@@ -820,7 +820,7 @@ void printer_init()
 	gCfgItems.zoffset_display_flg = 0;
 
 	gCfgItems.display_style = 1;//屏幕首页显示模式，0:经典模式，1:简约模式。
-	gCfgItems.mask_PB0_PB1_Function = 0;//屏蔽PB0和PB1检测功能；1:屏蔽功能；0:不屏蔽功能	
+	gCfgItems.mask_PB0_PB1_Function = 1;//屏蔽PB0和PB1检测功能；1:屏蔽功能；0:不屏蔽功能	
 	gCfgItems.btn_text_offset = 23;
 	gCfgItems.overturn_180 = 0;
 
@@ -828,9 +828,9 @@ void printer_init()
 	gCfgItems.calibrate_disp_flag = 0;
 	gCfgItems.user_rotation = 0;
 	/*wifi_cfg*/
-	gCfgItems.wifi_mode_sel = 1;//1为AP模式，其他为client模式，默认为AP模式。
+	gCfgItems.wifi_mode_sel = 0;//1为AP模式，其他为client模式，默认为AP模式。
 		//lan
-	gCfgItems.wifi_scan = 0;		//sta mode use
+	gCfgItems.wifi_scan = 1;		//sta mode use
 	memset(&wifiPara, 0, sizeof(wifiPara));
 	memset(&ipPara, 0, sizeof(ipPara));
 	
@@ -1101,7 +1101,6 @@ void recover_cfg_inf_tft()
 
 		HAL::AT24CXX_Read(BAK_BABY_STEP_DISP_ADDR,(uint8_t *)&gCfgItems.baby_step_display_flg,1);	
 		HAL::AT24CXX_Read(BAK_CALIBRATE_DISP_FLAG_ADDR,(uint8_t *)&gCfgItems.calibrate_disp_flag ,1);
-
 	}
 	else
 	{

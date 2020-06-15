@@ -1102,6 +1102,8 @@ void pwdwnReGcode()
 	unsigned char tmpGcode[FIFO_SIZE];
 	unsigned char *p;
 	unsigned char *q;
+	float z_pos;
+	unsigned char has_ups_z_coordinate[COORDINATELENGTH];
 	
 	while(checkFIFO(&gcodeTxFIFO) != fifo_empty) 
 		popFIFO(&gcodeTxFIFO,tmpGcode);	
@@ -1236,8 +1238,26 @@ void pwdwnReGcode()
 	//20150909
 	//q = RePrintData.x_coordinate;	while(*q != '\n' && *q != '\r')		*p++ = *q++; *p++ = ' ';
 	//q = RePrintData.y_coordinate;	while(*q != '\n' && *q != '\r')		*p++ = *q++;	*p++ = ' ';
+	//sean  20.5.26
+	//start
+	#if 1
+	if(gCfgItems.insert_det_module == 2)
+	{
+		q = z_coordinate_bak;
+		q++;
+		z_pos = atof((char *)q) + (float)gCfgItems.Pause_ZADD;
+		sprintf((char *)has_ups_z_coordinate,"Z%f\n",z_pos);
+		q = has_ups_z_coordinate;	while(*q != '\n' && *q != '\r')		*p++ = *q++;	*p++ = '\n';
+	}
+	else
+	{
+		q = z_coordinate_bak;	while(*q != '\n' && *q != '\r')		*p++ = *q++;	*p++ = '\n';
+	}
+	//end
+	#else
 	q = z_coordinate_bak;	while(*q != '\n' && *q != '\r')		*p++ = *q++;	*p++ = ' ';
 	q = RePrintData.e_coordinate;	while(*q != '\n' && *q != '\r')		*p++ = *q++;	*p++ = '\n';
+	#endif
 	pushFIFO(&gcodeTxFIFO,tmpGcode);
 
 	p=tmpGcode;		//Z轴下降5mm
@@ -1260,6 +1280,27 @@ void pwdwnReGcode()
 		*p++ = '\n';
 		pushFIFO(&gcodeTxFIFO,tmpGcode);
 		}
+
+	#if 1
+	//打印前先挤出10mm
+	p=tmpGcode;
+	*p++ = 'G';*p++ = '9';*p++ = '1';*p++ = '\n';
+	pushFIFO(&gcodeTxFIFO,tmpGcode);
+	p=tmpGcode;
+	//HC-chen 6.8
+	//*p++ = 'G';*p++ = '1';*p++ = ' ';*p++ = 'E ';*p++ = '1 ';*p++ = '\n ';
+	*p++ = 'G';*p++ = '1';*p++ = ' ';*p++ = 'E';*p++ = '1';*p++ = '0';*p++ = '\n';
+	pushFIFO(&gcodeTxFIFO,tmpGcode);	
+	p=tmpGcode;
+	*p++ = 'G';*p++ = '9';*p++ = '0';*p++ = '\n';
+	pushFIFO(&gcodeTxFIFO,tmpGcode);
+
+	p=tmpGcode;			//设置E当前位置
+	*p++ = 'G';*p++ = '9';*p++ = '2';*p++ = ' ';
+	q = RePrintData.e_coordinate;	while(*q != '\n' && *q != '\r')		*p++ = *q++;	*p++ = '\n';
+	pushFIFO(&gcodeTxFIFO,tmpGcode);
+	#endif
+	
 	p=tmpGcode;		//定位 X,Y
 	*p++ = 'G';*p++ = '1';*p++ = ' ';
 	q = RePrintData.x_coordinate;	while(*q != '\n' && *q != '\r')		*p++ = *q++; *p++ = ' ';
@@ -1295,7 +1336,7 @@ void pwdwnReGcode()
 	p=tmpGcode;		//"N-1 M110*15\n";
 	*p++ = 'N';*p++ = '-';*p++ = '1';*p++ = ' ';*p++ = 'M';*p++ = '1';*p++ = '1';*p++ = '0';*p++ = '*';*p++ = '1';*p++ = '5';*p++ = '\n';
 	pushFIFO(&gcodeTxFIFO,tmpGcode);
-	pushFIFO(&gcodeTxFIFO,tmpGcode);
+	//pushFIFO(&gcodeTxFIFO,tmpGcode);
 }
 
 
