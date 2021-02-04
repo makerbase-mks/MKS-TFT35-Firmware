@@ -190,7 +190,7 @@ void draw_tool()
 			BUTTON_SetBmpFileName(buttonLeveling.btnHandle, "bmp_leveling.bin",1);
 		}
 	}
-	BUTTON_SetBmpFileName(buttonFilament.btnHandle, "bmp_filament.bin",1);	
+	BUTTON_SetBmpFileName(buttonFilament.btnHandle, "bmp_filamentchange.bin",1);	
 	BUTTON_SetBmpFileName(buttonMore.btnHandle, "bmp_more.bin",1);	
 	BUTTON_SetBmpFileName(buttonRet.btnHandle, "bmp_return.bin",1);
 	//bmp_struct.XSize = toolbtm_image_X;

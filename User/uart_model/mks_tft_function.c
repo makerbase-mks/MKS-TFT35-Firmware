@@ -810,7 +810,7 @@ void mksBeeperAlarm(void)
 			BeeperFreq++;
 			
 			
-			if(BeeperFreq%3000 == 0)
+			if(BeeperFreq%30000 == 0)
 			{
 				BeeperCnt++;
 				SPEAKER = BeeperCnt%2;

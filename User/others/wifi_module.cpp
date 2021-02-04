@@ -664,7 +664,7 @@ void get_file_list(char *path)
 			//MX_SDIO_SD_Init();
 
 			//strcpy((char *)sd.gCurDir, path);      //skyblue-modify
-        	FATFS_LinkDriver_sd(&SD_Driver, sd.gCurDir);
+        		FATFS_LinkDriver_sd(&SD_Driver, sd.gCurDir);
 			f_mount(&fs, (TCHAR const*)sd.gCurDir, 0);	
 		}
 	}
@@ -888,26 +888,25 @@ static void wifi_gcode_exec(uint8_t *cmd_line)
 			{
 				
 				case 20: //print sd / udisk file
-					if(printerStaus == pr_idle)//lan
 					{								
 							
 						int index = 0;
 						char *det_pos;
 
-//						if(tmpStr == 0)
-//						{
-//							gCfgItems.fileSysType = FILE_SYS_SD;	
-//							send_to_wifi("Begin file list\r\n", strlen("Begin file list\r\n"));
-//							#if tan
-//							get_file_list("1:/");
-//							#else
-//							get_file_list(SD_Path);
-//							#endif
-//							send_to_wifi("End file list\r\n", strlen("End file list\r\n"));
-//
-//							send_to_wifi("ok\r\n", strlen("ok\r\n"));
-//							break;
-//						}
+						if(tmpStr == 0)
+						{
+							gCfgItems.fileSysType = FILE_SYS_SD;	
+							send_to_wifi("Begin file list\r\n", strlen("Begin file list\r\n"));
+							#if tan
+							get_file_list("1:/");
+							#else
+							get_file_list(SD_Path);
+							#endif
+							send_to_wifi("End file list\r\n", strlen("End file list\r\n"));
+
+							send_to_wifi("ok\r\n", strlen("ok\r\n"));
+							break;
+						}
 
 						while(tmpStr[index] == ' ')
 							index++;

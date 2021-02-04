@@ -453,15 +453,31 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 						   {
 								if((PW_PORT_READ != gCfgItems.filament_det2_level_flg) && (MT_PORT_READ != gCfgItems.filament_det1_level_flg))
 								{
+									if (printerStaus == pr_idle) {
+										Get_Temperature_Flg = 1;
+										get_temp_flag = 1;
+										SendOneTime = 1;
+										reset_print_time();
 										start_print_time();
-//										pause_resum = 1;
+										
+										//draw_dialog(DIALOG_TYPE_FILE_LOADING);
+										//save_preview_to_flash(curFileName,3,40);
+										//print_start_flg = 0;
+										preview_no_display = 0;
+										preview_gcode_prehandle(curFileName);
+										draw_printing();
+									}
+									else {
+										start_print_time();
+	//										pause_resum = 1;
 										printerStaus = pr_working;//MKS_WORKING;
 										last_disp_state = DIALOG_UI;
 										if(from_flash_pic==1)
 											flash_preview_begin = 1;
 										else
 											default_preview_flg = 1;											
-										draw_printing();   
+										draw_printing();  
+									}    
 								}
 								else
 								{
@@ -473,15 +489,31 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 						  {
 						  		if((PW_PORT_READ != gCfgItems.filament_det2_level_flg) && (MT_PORT_READ != gCfgItems.filament_det1_level_flg))
 								{
+										if (printerStaus == pr_idle) {
+										Get_Temperature_Flg = 1;
+										get_temp_flag = 1;
+										SendOneTime = 1;
+										reset_print_time();
 										start_print_time();
-//										pause_resum = 1;
+										
+										//draw_dialog(DIALOG_TYPE_FILE_LOADING);
+										//save_preview_to_flash(curFileName,3,40);
+										//print_start_flg = 0;
+										preview_no_display = 0;
+										preview_gcode_prehandle(curFileName);
+										draw_printing();
+									}
+									else {
+										start_print_time();
+	//										pause_resum = 1;
 										printerStaus = pr_working;//MKS_WORKING;
 										last_disp_state = DIALOG_UI;
 										if(from_flash_pic==1)
 											flash_preview_begin = 1;
 										else
 											default_preview_flg = 1;											
-										draw_printing();   
+										draw_printing();  
+									} 
 								}
 								else
 								{
@@ -493,6 +525,21 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 						  {
 						  		if((PW_PORT_READ != gCfgItems.filament_det2_level_flg) && (MT_PORT_READ != gCfgItems.filament_det1_level_flg))
 								{
+									if (printerStaus == pr_idle) {
+										Get_Temperature_Flg = 1;
+										get_temp_flag = 1;
+										SendOneTime = 1;
+										reset_print_time();
+										start_print_time();
+										
+										//draw_dialog(DIALOG_TYPE_FILE_LOADING);
+										//save_preview_to_flash(curFileName,3,40);
+										//print_start_flg = 0;
+										preview_no_display = 0;
+										preview_gcode_prehandle(curFileName);
+										draw_printing();
+									}
+									else {
 										start_print_time();
 //										pause_resum = 1;
 										printerStaus = pr_working;//MKS_WORKING;
@@ -501,7 +548,9 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 											flash_preview_begin = 1;
 										else
 											default_preview_flg = 1;											
-										draw_printing();   
+										draw_printing();  
+									}
+										 
 								}
 								else
 								{
@@ -513,15 +562,31 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 						  {
 						  		if((PW_PORT_READ != gCfgItems.filament_det2_level_flg) && (MT_PORT_READ != gCfgItems.filament_det1_level_flg))
 								{
+									if (printerStaus == pr_idle) {
+										Get_Temperature_Flg = 1;
+										get_temp_flag = 1;
+										SendOneTime = 1;
+										reset_print_time();
 										start_print_time();
-//										pause_resum = 1;
+										
+										//draw_dialog(DIALOG_TYPE_FILE_LOADING);
+										//save_preview_to_flash(curFileName,3,40);
+										//print_start_flg = 0;
+										preview_no_display = 0;
+										preview_gcode_prehandle(curFileName);
+										draw_printing();
+									}
+									else {
+										start_print_time();
+	//										pause_resum = 1;
 										printerStaus = pr_working;//MKS_WORKING;
 										last_disp_state = DIALOG_UI;
 										if(from_flash_pic==1)
 											flash_preview_begin = 1;
 										else
 											default_preview_flg = 1;											
-										draw_printing();   
+										draw_printing();  
+									} 
 								}
 								else
 								{
@@ -534,14 +599,31 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 						{
 							if( MT_PORT_READ != gCfgItems.filament_det1_level_flg )
 							{
-								start_print_time();
-								printerStaus = pr_working;//MKS_WORKING;
-								last_disp_state = DIALOG_UI;
-								if(from_flash_pic==1)
-									flash_preview_begin = 1;
-								else
-									default_preview_flg = 1;									
-								draw_printing();   
+								if (printerStaus == pr_idle) {
+									Get_Temperature_Flg = 1;
+									get_temp_flag = 1;
+									SendOneTime = 1;
+									reset_print_time();
+									start_print_time();
+									
+									//draw_dialog(DIALOG_TYPE_FILE_LOADING);
+									//save_preview_to_flash(curFileName,3,40);
+									//print_start_flg = 0;
+									preview_no_display = 0;
+									preview_gcode_prehandle(curFileName);
+									draw_printing();
+								}
+								else {
+									start_print_time();
+//										pause_resum = 1;
+									printerStaus = pr_working;//MKS_WORKING;
+									last_disp_state = DIALOG_UI;
+									if(from_flash_pic==1)
+										flash_preview_begin = 1;
+									else
+										default_preview_flg = 1;											
+									draw_printing();  
+								}
 							}
 							else 
 							{

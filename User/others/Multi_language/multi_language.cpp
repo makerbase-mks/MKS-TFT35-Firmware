@@ -1924,6 +1924,7 @@ void disp_language_init()
 			print_file_dialog_menu.stop = DIALOG_STOP_EN;
 			print_file_dialog_menu.no_file_print_tips = DIALOG_ERROR_TIPS1_EN;	
 			print_file_dialog_menu.print_from_breakpoint = DIALOG_REPRINT_FROM_BREAKPOINT_EN;
+			print_file_dialog_menu.filament_no_press=DIALOG_FILAMENT_NO_PRESS_EN;
 			print_file_dialog_menu.close_machine_error = DIALOG_ERROR_TIPS2_EN;
 			print_file_dialog_menu.wifi_enable_tips=DIALOG_WIFI_ENABLE_TIPS_EN;			
 			//ZOFFSET
@@ -2118,6 +2119,7 @@ void disp_language_init()
 			print_file_dialog_menu.stop = DIALOG_STOP_RU;
 			print_file_dialog_menu.no_file_print_tips = DIALOG_ERROR_TIPS1_RU;		
 			print_file_dialog_menu.print_from_breakpoint = DIALOG_REPRINT_FROM_BREAKPOINT_RU;
+			print_file_dialog_menu.filament_no_press=DIALOG_FILAMENT_NO_PRESS_RU;
 			print_file_dialog_menu.close_machine_error = DIALOG_ERROR_TIPS2_RU;
 			print_file_dialog_menu.wifi_enable_tips=DIALOG_WIFI_ENABLE_TIPS_RU;			
 			//ZOFFSET
@@ -2317,6 +2319,7 @@ void disp_language_init()
 			print_file_dialog_menu.stop = DIALOG_STOP_SP;
 			print_file_dialog_menu.no_file_print_tips = DIALOG_ERROR_TIPS1_SP;
 			print_file_dialog_menu.print_from_breakpoint = DIALOG_REPRINT_FROM_BREAKPOINT_SP;
+			print_file_dialog_menu.filament_no_press=DIALOG_FILAMENT_NO_PRESS_SP;
 			print_file_dialog_menu.close_machine_error = DIALOG_ERROR_TIPS2_SP;
 			print_file_dialog_menu.wifi_enable_tips=DIALOG_WIFI_ENABLE_TIPS_SP;
 			//ZOFFSET
@@ -2503,7 +2506,8 @@ void disp_language_init()
 			print_file_dialog_menu.retry = DIALOG_RETRY_FR;
 			print_file_dialog_menu.stop = DIALOG_STOP_FR;
 			print_file_dialog_menu.no_file_print_tips = DIALOG_ERROR_TIPS1_FR;
-			print_file_dialog_menu.print_from_breakpoint = DIALOG_REPRINT_FROM_BREAKPOINT_FR;		
+			print_file_dialog_menu.print_from_breakpoint = DIALOG_REPRINT_FROM_BREAKPOINT_FR;
+			print_file_dialog_menu.filament_no_press=DIALOG_FILAMENT_NO_PRESS_FR;
 			print_file_dialog_menu.close_machine_error = DIALOG_ERROR_TIPS2_FR;
 			
 			print_file_dialog_menu.wifi_enable_tips=DIALOG_WIFI_ENABLE_TIPS_FR;
@@ -2692,6 +2696,7 @@ void disp_language_init()
 			print_file_dialog_menu.stop = DIALOG_STOP_IT;
 			print_file_dialog_menu.no_file_print_tips = DIALOG_ERROR_TIPS1_IT;
 			print_file_dialog_menu.print_from_breakpoint = DIALOG_REPRINT_FROM_BREAKPOINT_IT;
+			print_file_dialog_menu.filament_no_press=DIALOG_FILAMENT_NO_PRESS_IT;
 			print_file_dialog_menu.close_machine_error = DIALOG_ERROR_TIPS2_IT;
 			print_file_dialog_menu.wifi_enable_tips=DIALOG_WIFI_ENABLE_TIPS_IT;
 			//ZOFFSET

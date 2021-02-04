@@ -1,0 +1,3 @@
+---- about_menu.firmware_v Matches (2 in 2 files) ----
+Draw_about.cpp (d:\github\mks-tft35-firmware\user\ui):	strcat((char*)buf,(const char *)about_menu.firmware_v);	
+Multi_language.cpp (d:\github\mks-tft35-firmware\user\others\multi_language):	about_menu.firmware_v= ABOUT_VERSION_TEXT;

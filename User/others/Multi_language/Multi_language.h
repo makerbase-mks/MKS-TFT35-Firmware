@@ -866,7 +866,7 @@ extern TemperatureSettings_menu_def TemperatureSettings_menu;
 #define HOME_ALL_TEXT				"All"
 
 #define ABOUT_TYPE_TEXT				"MKS TFT"
-#define ABOUT_VERSION_TEXT			"1.0.7"
+#define ABOUT_VERSION_TEXT			"1.0.8"
 //#define ABOUT_WIFI_TEXT				"WiFi:"
 
 #define FAN_OPEN_TEXT				"100%"
@@ -2230,6 +2230,8 @@ extern TemperatureSettings_menu_def TemperatureSettings_menu;
 #define DIALOG_UNBIND_PRINTER_FR        "Unbind the printer?"
 #define DIALOG_WIFI_ENABLE_TIPS_FR "The wifi module is being configured,\nplease wait a moment....."
 #define CALIBRATE_FR  "Calibrate"
+#define DIALOG_FILAMENT_NO_PRESS_FR              "Veuillez d'abord charger les consommables!"
+
 //****************俄语***************************//
 #define TOOL_TEXT_RU		    "инструмент"
 #define PREHEAT_TEXT_RU         " нагрев"
@@ -2462,6 +2464,7 @@ extern TemperatureSettings_menu_def TemperatureSettings_menu;
 #define DIALOG_UNBIND_PRINTER_RU            "Unbind the printer?"
 #define DIALOG_WIFI_ENABLE_TIPS_RU "The wifi module is being configured,\nplease wait a moment....."
 #define CALIBRATE_RU  "Calibrate"
+#define DIALOG_FILAMENT_NO_PRESS_RU                     "Пожалуйста,сначала \nзагрузите расходные материалы!"
 //****************西班牙语***************************
 #define TOOL_TEXT_SP		    "Ajustes"
 #define PREHEAT_TEXT_SP         "Precalentar"//"precalent\nar"
@@ -2696,6 +2699,7 @@ extern TemperatureSettings_menu_def TemperatureSettings_menu;
 #define DIALOG_UNBIND_PRINTER_SP            "Unbind the printer?"
 #define DIALOG_WIFI_ENABLE_TIPS_SP "The wifi module is being configured,\nplease wait a moment....."
 #define CALIBRATE_SP  "Calibrate"
+#define DIALOG_FILAMENT_NO_PRESS_SP                     "¡Cargue los consumibles primero!"
 
 #if 0
 //****************希腊语***************************//
@@ -3476,6 +3480,7 @@ extern TemperatureSettings_menu_def TemperatureSettings_menu;
 #define DIALOG_UNBIND_PRINTER_IT                "Unbind the printer?"
 #define DIALOG_WIFI_ENABLE_TIPS_IT "The wifi module is being configured,\nplease wait a moment....."
 #define CALIBRATE_IT  "Calibrate"
+#define DIALOG_FILAMENT_NO_PRESS_IT                     "Si prega di caricare prima i materiali di consumo!"
 
 /*****************************************/
 

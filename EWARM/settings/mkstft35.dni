@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=657031556
+Checksum=-1965355776
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -98,5 +98,6 @@ mode=0
 [Breakpoints2]
 Count=0
 [Aliases]
-Count=0
+A0=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\Widget\BUTTON_Bitmap.c" ""
+Count=1
 SuppressDialog=0
