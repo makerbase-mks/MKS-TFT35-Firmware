@@ -1,4 +1,11 @@
 # MKS-TFT35-Firmware
+
+### MKS-TFT35-Firmware 1.0.8
+
+     (1) Fix the problem that cura cannot read SD card files
+     (2) Fix the display problem of the material break detection dialog box
+     (3) Fix the buzzer response problem when the material is interrupted
+
 ### MKS-TFT35-Firmware 1.0.7
 
      (1) Add support for UPS power failure detection module
@@ -7,12 +14,8 @@
      (4) Increase wifi password setting length
      
 ### MKS-TFT35-Firmware 1.0.6
- (1) Add wifi scan mode
- 
- (2) Add most of the configuration parameters in the online configuration configuration file
- 
- (3) Add Marin firmware online parameter adjustment function, can configure basic parameters such as pulse, TMC drive current,          acceleration, probe offset, etc.
- 
- (4) Add Gcode console display
- 
- (5) Added on-screen text reminder function when out of stock
+     (1) Add wifi scan mode
+     (2) Add most of the configuration parameters in the online configuration configuration file
+     (3) Add Marin firmware online parameter adjustment function,can configure basic parameters such as pulse, TMC drive current,acceleration, probe offset, etc.
+     (4) Add Gcode console display
+     (5) Added on-screen text reminder function when out of stock
