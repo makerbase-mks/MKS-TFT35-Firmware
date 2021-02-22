@@ -21,10 +21,10 @@ typedef struct
 	
 	volatile int32_t background_color; //èƒŒæ™¯é¢œè‰²
 	volatile int32_t title_color; //æ ‡é¢˜é¢œè‰²
-	volatile int32_t state_background_color; //çŠ¶æ€æ˜¾ç¤ºèƒŒæ™¯é¢œè‰?
-	volatile int32_t state_text_color; //çŠ¶æ€æ˜¾ç¤ºæ–‡å­—é¢œè‰²é¢œè‰?
-	volatile int32_t filename_color; //æ–‡ä»¶åæ–‡å­—é¢œè‰?
-	volatile int32_t filename_background_color; //æ–‡ä»¶åèƒŒæ™¯é¢œè‰?
+	volatile int32_t state_background_color; //çŠ¶æ€æ˜¾ç¤ºèƒŒæ™¯é¢œï¿½?
+	volatile int32_t state_text_color; //çŠ¶æ€æ˜¾ç¤ºæ–‡å­—é¢œè‰²é¢œï¿½?
+	volatile int32_t filename_color; //æ–‡ä»¶åæ–‡å­—é¢œï¿½?
+	volatile int32_t filename_background_color; //æ–‡ä»¶åèƒŒæ™¯é¢œï¿½?
 	volatile int32_t printingstate_word_background_color;
 	volatile int32_t printingstate_word_color;
 	volatile int32_t btn_color;
@@ -47,37 +47,37 @@ typedef struct
 	volatile int32_t printfile_textcolor;
 	volatile int8_t custom_pic_flag;	
 	volatile float curPos[3];
-	volatile float curSprayerTemp[2];	// 2¸öÅçÍ·ÎÂ¶È
-	volatile float curBedTemp;	//ÈÈ´²ÎÂ¶È
-	volatile float desireSprayerTemp[2];// 2¸öÅçÍ·Ä¿±êÎÂ¶È
-	volatile float desireBedTemp;// ÈÈ´²Ä¿±êÎÂ¶È
+	volatile float curSprayerTemp[2];	// 2ï¿½ï¿½ï¿½ï¿½Í·ï¿½Â¶ï¿½
+	volatile float curBedTemp;	//ï¿½È´ï¿½ï¿½Â¶ï¿½
+	volatile float desireSprayerTemp[2];// 2ï¿½ï¿½ï¿½ï¿½Í·Ä¿ï¿½ï¿½ï¿½Â¶ï¿½
+	volatile float desireBedTemp;// ï¿½È´ï¿½Ä¿ï¿½ï¿½ï¿½Â¶ï¿½
 	volatile float desireSprayerTempBak_1[2];
 
-	volatile float preheat_desireSprayerTemp[2];// 2¸öÅçÍ·Ä¿±êÎÂ¶È
-	volatile float preheat_desireBedTemp;// ÈÈ´²Ä¿±êÎÂ¶È
+	volatile float preheat_desireSprayerTemp[2];// 2ï¿½ï¿½ï¿½ï¿½Í·Ä¿ï¿½ï¿½ï¿½Â¶ï¿½
+	volatile float preheat_desireBedTemp;// ï¿½È´ï¿½Ä¿ï¿½ï¿½ï¿½Â¶ï¿½
 
 
-	volatile int8_t curSprayerChoose;	//µ±Ç°Ñ¡ÔñµÄÅçÍ·
+	volatile int8_t curSprayerChoose;	//ï¿½ï¿½Ç°Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½Í·
 	volatile int8_t curSprayerChoose_bak;
-	volatile int8_t curTempType;		//ÅçÍ·1¡¢ÅçÍ·2¡¢ÈÈ´²
-	volatile int8_t stepHeat;	//?¡è¨¨¨¨2???
-	volatile int8_t fanOnoff; //·çÉÈ¿ª¹Ø
-	volatile uint8_t fanSpeed;	//·çÉÈËÙ¶È
-	volatile int8_t sprayerNum; // ÅçÍ·Êı
-	volatile int8_t machineType; //»úĞÍ
-	volatile uint16_t printSpeed;		//´òÓ¡ËÙ¶È
-	volatile uint16_t printExtSpeed0;		//´òÓ¡ÆÚ¼ä¼·³öËÙ¶È
-	volatile uint16_t printExtSpeed1;		//´òÓ¡ÆÚ¼ä¼·³öËÙ¶È
-	volatile uint8_t stepPrintSpeed;	//´òÓ¡ËÙ¶Èµ÷Õû²½½ø
-	volatile int8_t extruStep;	//?¡¤3??¨´?¨¨
-	volatile int8_t extruSpeed;	//¼·³öËÙ¶È
-	volatile int16_t moveSpeed;	//ÒÆ¶¯ËÙ¶È
-	volatile float move_dist;		//ÒÆ¶¯¾àÀë
-	volatile int8_t language;	//ÓïÑÔ
-	volatile int8_t baud;		//²¨ÌØÂÊ
+	volatile int8_t curTempType;		//ï¿½ï¿½Í·1ï¿½ï¿½ï¿½ï¿½Í·2ï¿½ï¿½ï¿½È´ï¿½
+	volatile int8_t stepHeat;	//?ï¿½è¨¨ï¿½ï¿½2???
+	volatile int8_t fanOnoff; //ï¿½ï¿½ï¿½È¿ï¿½ï¿½ï¿½
+	volatile uint8_t fanSpeed;	//ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+	volatile int8_t sprayerNum; // ï¿½ï¿½Í·ï¿½ï¿½
+	volatile int8_t machineType; //ï¿½ï¿½ï¿½ï¿½
+	volatile uint16_t printSpeed;		//ï¿½ï¿½Ó¡ï¿½Ù¶ï¿½
+	volatile uint16_t printExtSpeed0;		//ï¿½ï¿½Ó¡ï¿½Ú¼ä¼·ï¿½ï¿½ï¿½Ù¶ï¿½
+	volatile uint16_t printExtSpeed1;		//ï¿½ï¿½Ó¡ï¿½Ú¼ä¼·ï¿½ï¿½ï¿½Ù¶ï¿½
+	volatile uint8_t stepPrintSpeed;	//ï¿½ï¿½Ó¡ï¿½Ù¶Èµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	volatile int8_t extruStep;	//?ï¿½ï¿½3??ï¿½ï¿½?ï¿½ï¿½
+	volatile int8_t extruSpeed;	//ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+	volatile int16_t moveSpeed;	//ï¿½Æ¶ï¿½ï¿½Ù¶ï¿½
+	volatile float move_dist;		//ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½
+	volatile int8_t language;	//ï¿½ï¿½ï¿½ï¿½
+	volatile int8_t baud;		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	
-	volatile int8_t fileSysType; //ÎÄ¼şÏµÍ³ÀàĞÍ
-	volatile uint8_t touch_adj_flag; //´¥ÃşÆÁĞ£Õı±êÖ¾Î»
+	volatile int8_t fileSysType; //ï¿½Ä¼ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½
+	volatile uint8_t touch_adj_flag; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ£ï¿½ï¿½ï¿½ï¿½Ö¾Î»
 	volatile int32_t touch_adj_xMin;
 	volatile int32_t touch_adj_xMax;
 	volatile int32_t touch_adj_yMin;
@@ -96,27 +96,27 @@ typedef struct
 	volatile uint8_t func_btn2_display_flag;
 	volatile uint8_t func_btn3_display_flag;
 
-	volatile uint8_t extern_chinese_flg;//Íâ²¿×Ö¿â¡£
+	volatile uint8_t extern_chinese_flg;//ï¿½â²¿ï¿½Ö¿â¡£
 
 	volatile uint8_t print_finish_close_machine_flg;	
 
-	//volatile uint32_t filamentchange_speed;//»»ÁÏËÙ¶È
-	//volatile uint8_t filamentchange_step;//»»ÁÏ²½½ø	
+	//volatile uint32_t filamentchange_speed;//ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+	//volatile uint8_t filamentchange_step;//ï¿½ï¿½ï¿½Ï²ï¿½ï¿½ï¿½	
 	//volatile uint32_t filament_limit_temper;
 	
 	volatile uint8_t morefunc_cnt;
 	
-	volatile uint16_t filament_load_speed;//»»ÁÏËÙ¶È
-	volatile uint16_t filament_load_length;//»»ÁÏ²½½ø
-	//uint16_t filament_load_limit_temper;//»»ÁÏµÄ×îµÍÎÂ¶ÈÖµ
+	volatile uint16_t filament_load_speed;//ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+	volatile uint16_t filament_load_length;//ï¿½ï¿½ï¿½Ï²ï¿½ï¿½ï¿½
+	//uint16_t filament_load_limit_temper;//ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½Â¶ï¿½Öµ
 	volatile uint16_t filament_loading_time;
 	volatile uint16_t filament_unload_speed;
 	volatile uint16_t  filament_unload_length;
 	volatile uint16_t filament_limit_temper;
 	volatile uint16_t filament_unloading_time;
 
-	volatile uint8_t leveling_mode;//µ÷Æ½Ä£Ê½0:ÊÖ¶¯µ÷Æ½£¬1:×Ô¶¯µ÷Æ½
-	volatile uint8_t leveling_point_number;//ÊÖ¶¯µ÷Æ½ÉèÖÃ×ø±êÊı(¿ÉÉè3/4/5Èı¸öÖµ)
+	volatile uint8_t leveling_mode;//ï¿½ï¿½Æ½Ä£Ê½0:ï¿½Ö¶ï¿½ï¿½ï¿½Æ½ï¿½ï¿½1:ï¿½Ô¶ï¿½ï¿½ï¿½Æ½
+	volatile uint8_t leveling_point_number;//ï¿½Ö¶ï¿½ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½3/4/5ï¿½ï¿½ï¿½ï¿½Öµ)
 	
 	volatile int32_t leveling_point1_x;
 	volatile int32_t leveling_point1_y;
@@ -140,20 +140,20 @@ typedef struct
 	volatile int16_t leveling_z_high;
 	/******************************************add***************/
 	volatile uint8_t rePrintFlag;
-	volatile uint8_t pwrdn_mtrdn_level_flg;//¶ÏµçµçÁÏÂß¼­µçÆ½±êÖ¾£¬1:¶Ë¿ÚÄ¬ÈÏÎª¸ßµçÆ½£¬0:¶Ë¿ÚÄ¬ÈÏÎªµÍµçÆ½
+	volatile uint8_t pwrdn_mtrdn_level_flg;//ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½Æ½ï¿½ï¿½Ö¾ï¿½ï¿½1:ï¿½Ë¿ï¿½Ä¬ï¿½ï¿½Îªï¿½ßµï¿½Æ½ï¿½ï¿½0:ï¿½Ë¿ï¿½Ä¬ï¿½ï¿½Îªï¿½Íµï¿½Æ½
 	volatile int16_t Pause_ZADD;
 	volatile int16_t Pause_XPOS;
 	volatile int16_t Pause_YPOS;
-	volatile uint8_t pre_fanSpeed;//Ô¤Éè·ç»úËÙ¶È
-	//volatile uint8_t wifi_mode_sel;//wifiÄ£Ê½Ñ¡Ôñ¡£
-	volatile uint8_t custom_bed_flag;//ÈÈ´²¶¨ÖÆ
-	volatile uint8_t firmware_type;//Ö÷°å¹Ì¼şÀàĞÍ¡£1:marlin;2:repetier;3:smoothie
-	volatile uint16_t preheat_max_desireSprayerTemp;//ÅçÍ·×î´óÄ¿±êÎÂ¶È
-	volatile uint16_t preheat_max_desireBedTemp;//ÈÈ´²×î´óÄ¿±êÎÂ¶È
+	volatile uint8_t pre_fanSpeed;//Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+	//volatile uint8_t wifi_mode_sel;//wifiÄ£Ê½Ñ¡ï¿½ï¿½
+	volatile uint8_t custom_bed_flag;//ï¿½È´ï¿½ï¿½ï¿½ï¿½ï¿½
+	volatile uint8_t firmware_type;//ï¿½ï¿½ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½Í¡ï¿½1:marlin;2:repetier;3:smoothie
+	volatile uint16_t preheat_max_desireSprayerTemp;//ï¿½ï¿½Í·ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½Â¶ï¿½
+	volatile uint16_t preheat_max_desireBedTemp;//ï¿½È´ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½Â¶ï¿½
 	volatile float curSprayerTempBak[2];
 	volatile float desireSprayerTempBak[2];
 	volatile float curBedTempBak;
-	volatile volatile float desireBedTempBak;
+	volatile float desireBedTempBak;
 	volatile uint8_t pwd_reprint_flg;
 	volatile float breakpoint_z_error;
 
@@ -167,24 +167,24 @@ typedef struct
 	volatile unsigned char sd_saving;
 	volatile uint8_t getzpos_flg;
 	volatile uint8_t getzpos_enable;
-	volatile float zpos;//zÖá×ø±êÖµ
+	volatile float zpos;//zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 	volatile unsigned char move_z_coordinate[20];
 
-	volatile uint8_t insert_det_module;// 1:½ÓÈë220detÄ£¿é£¬ÆäËûÖµ:½ÓPWC¹Ø»úÄ£¿é¡£PWC¿ÉÒÔÌæ´ú220detÄ£¿é¡£
+	volatile uint8_t insert_det_module;// 1:ï¿½ï¿½ï¿½ï¿½220detÄ£ï¿½é£¬ï¿½ï¿½ï¿½ï¿½Öµ:ï¿½ï¿½PWCï¿½Ø»ï¿½Ä£ï¿½é¡£PWCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½220detÄ£ï¿½é¡£
 
-	volatile uint8_t filament_det1_level_flg;// ¶ÏÁÏ¼ì²â1£»1:¸ßµçÆ½´¥·¢£¬0µÍµçÆ½´¥·¢¡£
-	volatile uint8_t filament_det2_level_flg;// ¶ÏÁÏ¼ì²â2£»1:¸ßµçÆ½´¥·¢£¬0µÍµçÆ½´¥·¢	
+	volatile uint8_t filament_det1_level_flg;// ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½1ï¿½ï¿½1:ï¿½ßµï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½Íµï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	volatile uint8_t filament_det2_level_flg;// ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½2ï¿½ï¿½1:ï¿½ßµï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½Íµï¿½Æ½ï¿½ï¿½ï¿½ï¿½	
 	volatile uint8_t multiple_language;
-	volatile uint8_t overturn_180;	 //ÆÁÄ»·­×ª180¡ã
+	volatile uint8_t overturn_180;	 //ï¿½ï¿½Ä»ï¿½ï¿½×ª180ï¿½ï¿½
 	volatile uint8_t user_rotation;
-	volatile char wifi_ap[32];	//wifiÍøÂçÃû³Æ×Ö·û´®
-	volatile char wifi_key[64]; //wifiÃÜÂë×Ö·û´®
+	volatile char wifi_ap[32];	//wifiï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
+	volatile char wifi_key[64]; //wifiï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
 	volatile uint8_t wifi_mode_sel;
 	uint8_t wifi_type; // HLK: 0x01 , ESP: 0X02
 
 	volatile char cloud_enable;	
-	volatile char cloud_hostUrl[96];	//ÔÆÁ¬½ÓµØÖ·
-	volatile int cloud_port;		//ÔÆÁ¬½Ó¶Ë¿Ú
+	volatile char cloud_hostUrl[96];	//ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½Ö·
+	volatile int cloud_port;		//ï¿½ï¿½ï¿½ï¿½ï¿½Ó¶Ë¿ï¿½
 
 	volatile float Zoffset;
 	volatile float stepZoffset;
@@ -193,12 +193,12 @@ typedef struct
 
 	volatile uint8_t display_style;
 	volatile uint8_t mask_PB0_PB1_Function;
-	volatile uint8_t btn_text_offset;//°´Å¥×ÖÌåÆ«ÒÆµ×±ßÎ»ÖÃ
+	volatile uint8_t btn_text_offset;//ï¿½ï¿½Å¥ï¿½ï¿½ï¿½ï¿½Æ«ï¿½Æµ×±ï¿½Î»ï¿½ï¿½
 
-	volatile uint8_t add_checkSum;   //M110ÊÇ·ñ¼ÓĞ£Ñé±êÖ¾Î»
-	volatile uint8_t display_error;   //ÏÔÊ¾±¨´íĞÅÏ¢±êÖ¾Î» 
-	volatile uint8_t restart_data_init; //resend 5´ÎºóÖØĞÂ³õÊ¼»¯SD¿¨±êÖ¾Î»
-	volatile uint8_t has_flash_pre_view;//ÓĞÍ¼Æ¬Ô¤ÀÀ
+	volatile uint8_t add_checkSum;   //M110ï¿½Ç·ï¿½ï¿½Ğ£ï¿½ï¿½ï¿½Ö¾Î»
+	volatile uint8_t display_error;   //ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ö¾Î» 
+	volatile uint8_t restart_data_init; //resend 5ï¿½Îºï¿½ï¿½ï¿½ï¿½Â³ï¿½Ê¼ï¿½ï¿½SDï¿½ï¿½ï¿½ï¿½Ö¾Î»
+	volatile uint8_t has_flash_pre_view;//ï¿½ï¿½Í¼Æ¬Ô¤ï¿½ï¿½
 	volatile uint8_t baby_step_display_flg;
 	volatile uint8_t calibrate_disp_flag;
 	volatile uint8_t wifi_scan;
@@ -627,7 +627,7 @@ void recover_cfg_inf_tft();
 #define SPEAKER   PAout(2)
 #define RESET_1963   PDout(6)
 #define PULLUP(IO,v)            //{pinMode(IO, (v!=LOW ? INPUT_PULLUP : INPUT)); }
-#define ARDUINO 101//?a¨¢?¨¨?¡À¨¤3¨¬¨ª¡§1y¡ê??a¨º?ARDUINO¦Ì?¡ã?¡À?o?
+#define ARDUINO 101//?aï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1yï¿½ï¿½??aï¿½ï¿½?ARDUINOï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?o?
 
 // HC-chen 2017.7.26
 #if 0
@@ -720,13 +720,13 @@ void bakup_file_path(uint8_t *path, uint32_t  len);
 #define PUTDOWN_TIME	50
 
 //#define OFFSETLENGTH	0x100000	 	//1M
-#define OFFSETLENGTH	0x19000	 	//100K	»ØËİ³¤¶È
+#define OFFSETLENGTH	0x19000	 	//100K	ï¿½ï¿½ï¿½İ³ï¿½ï¿½ï¿½
 	 
 #define COORDINATELENGTH	20
 
 #if 0	 
 #define  EEPROM_HIGH_ADDR			256
-#define  BAK_REPRINT_INFO				EEPROM_HIGH_ADDR - 4			// Ğø´ò±êÖ¾(uint8_t) | ÅçÍ·Ñ¡Ôñ(¸ß4Î») ·çÉÈ¿ª¹Ø×´Ì¬(µÍËÄÎ»)|·çËÙ8Î»| ÈÈ´²ÎÂ¶È8Î»
+#define  BAK_REPRINT_INFO				EEPROM_HIGH_ADDR - 4			// ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾(uint8_t) | ï¿½ï¿½Í·Ñ¡ï¿½ï¿½(ï¿½ï¿½4Î») ï¿½ï¿½ï¿½È¿ï¿½ï¿½ï¿½×´Ì¬(ï¿½ï¿½ï¿½ï¿½Î»)|ï¿½ï¿½ï¿½ï¿½8Î»| ï¿½È´ï¿½ï¿½Â¶ï¿½8Î»
 #define  BAK_REPRINT_OFFSET		BAK_REPRINT_INFO - 4			// offset(uint32_t)
 #define  BAK_REPRINT_HTEMP			BAK_REPRINT_OFFSET - 4		// T0Temp(uint16_t)	| T1Temp(uint16_t)
 #define  BAK_REPRINT_FAN				BAK_REPRINT_HTEMP - 4		 // BedTemp(uint8_t)	| fanOnoff(uint8_t) |fanSpeed(uint8_t)| null(uint8_t)
@@ -737,13 +737,13 @@ void bakup_file_path(uint8_t *path, uint32_t  len);
 #define  BAK_REPRINT_S					BAK_REPRINT_Z - 4			//null(uint24_t) | saveFlag(uint8_t)
 #endif
 #endif
-//²ÉÓÃÁ¬ĞøĞ´e2promµÄ·½Ê½£¬
-//ÖØĞÂ¶¨ÒåÁË¶ÏµçÊı¾İµÄ´æ´¢Î»ÖÃ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ´e2promï¿½Ä·ï¿½Ê½ï¿½ï¿½
+//ï¿½ï¿½ï¿½Â¶ï¿½ï¿½ï¿½ï¿½Ë¶Ïµï¿½ï¿½ï¿½ï¿½İµÄ´æ´¢Î»ï¿½ï¿½
 #define  EEPROM_HIGH_ADDR			256
 #define  BAK_REPRINT_TIME			EEPROM_HIGH_ADDR - 4		//hours(int16_t) | minutes(int8_t) ;
 #define  BAK_REPRINT_HTEMP		BAK_REPRINT_TIME - 4		// T0Temp(uint16_t)	| T1Temp(uint16_t)
 #define  BAK_REPRINT_OFFSET 	BAK_REPRINT_HTEMP - 4		// offset(uint32_t)
-#define  BAK_REPRINT_INFO		  BAK_REPRINT_OFFSET - 4	// Ğø´ò±êÖ¾(uint8_t) | ÅçÍ·Ñ¡Ôñ(¸ß4Î») ·çÉÈ¿ª¹Ø×´Ì¬(µÍËÄÎ»)|·çËÙ8Î»| ÈÈ´²ÎÂ¶È8Î»
+#define  BAK_REPRINT_INFO		  BAK_REPRINT_OFFSET - 4	// ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾(uint8_t) | ï¿½ï¿½Í·Ñ¡ï¿½ï¿½(ï¿½ï¿½4Î») ï¿½ï¿½ï¿½È¿ï¿½ï¿½ï¿½×´Ì¬(ï¿½ï¿½ï¿½ï¿½Î»)|ï¿½ï¿½ï¿½ï¿½8Î»| ï¿½È´ï¿½ï¿½Â¶ï¿½8Î»
 #define  BAK_REPRINT_X					BAK_REPRINT_INFO - 4		 // X position
 #define  BAK_REPRINT_Y					BAK_REPRINT_X - 4			 //Y position
 #define  BAK_REPRINT_Z					BAK_REPRINT_Y - 4			 //Z position
