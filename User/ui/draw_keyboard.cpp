@@ -100,26 +100,26 @@ static void cbKeyboardWin(WM_MESSAGE * pMsg) {
 			//GUI_FillRect(0,titleHeight-2,LCD_WIDTH,titleHeight);
             
 			GUI_SetColor(0x979797);
-			GUI_FillRect(0,VALUE_DISP_HEIGHT,LCD_WIDTH-6,VALUE_DISP_HEIGHT+1);//ï¿½ï¿½ï¿½ï¿½
+			GUI_FillRect(0,VALUE_DISP_HEIGHT,LCD_WIDTH-6,VALUE_DISP_HEIGHT+1);//ºáÏß
 	            	GUI_FillRect(0,VALUE_DISP_HEIGHT+1+KEY_HEIGHT,LCD_WIDTH-6,VALUE_DISP_HEIGHT+1+KEY_HEIGHT+1);
 			GUI_FillRect(0,VALUE_DISP_HEIGHT+1+KEY_HEIGHT*2+1,LCD_WIDTH-6,VALUE_DISP_HEIGHT+1+KEY_HEIGHT*2+1*2);
 			GUI_FillRect(0,VALUE_DISP_HEIGHT+1+KEY_HEIGHT*3+1*2,LCD_WIDTH-6,VALUE_DISP_HEIGHT+1+KEY_HEIGHT*3+1*3);
 			GUI_FillRect(0,VALUE_DISP_HEIGHT+1+KEY_HEIGHT*4+1*3,LCD_WIDTH-6,VALUE_DISP_HEIGHT+1+KEY_HEIGHT*4+1*4);
 			GUI_FillRect(0,VALUE_DISP_HEIGHT+1+KEY_HEIGHT*5+1*4,LCD_WIDTH-6,VALUE_DISP_HEIGHT+1+KEY_HEIGHT*5+1*5);
 
-			GUI_FillRect(FIRST_LINE_WIDTH,VALUE_DISP_HEIGHT,FIRST_LINE_WIDTH+1,VALUE_DISP_HEIGHT+(KEY_HEIGHT+1)*1);//ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			GUI_FillRect(FIRST_LINE_WIDTH,VALUE_DISP_HEIGHT,FIRST_LINE_WIDTH+1,VALUE_DISP_HEIGHT+(KEY_HEIGHT+1)*1);//µÚÒ»ÐÐÊúÏß
 			GUI_FillRect(FIRST_LINE_WIDTH+1+FIRST_LINE_WIDTH*1,VALUE_DISP_HEIGHT,(FIRST_LINE_WIDTH+1)+FIRST_LINE_WIDTH*1+1,VALUE_DISP_HEIGHT+(KEY_HEIGHT+1)*1);
 			GUI_FillRect((FIRST_LINE_WIDTH+1)+FIRST_LINE_WIDTH*2+1,VALUE_DISP_HEIGHT,(FIRST_LINE_WIDTH+1)+FIRST_LINE_WIDTH*2+1+1,VALUE_DISP_HEIGHT+(KEY_HEIGHT+1)*1);
 			GUI_FillRect((FIRST_LINE_WIDTH+1)+FIRST_LINE_WIDTH*3+1+1,VALUE_DISP_HEIGHT,(FIRST_LINE_WIDTH+1)+FIRST_LINE_WIDTH*3+1+1+1,VALUE_DISP_HEIGHT+(KEY_HEIGHT+1)*1);
 
-			GUI_FillRect(KEY_WIDTH,VALUE_DISP_HEIGHT+1+KEY_HEIGHT,KEY_WIDTH+1,VALUE_DISP_HEIGHT+KEY_HEIGHT*5+4);//ï¿½ï¿½ï¿½ï¿½
+			GUI_FillRect(KEY_WIDTH,VALUE_DISP_HEIGHT+1+KEY_HEIGHT,KEY_WIDTH+1,VALUE_DISP_HEIGHT+KEY_HEIGHT*5+4);//ÊúÏß
 			GUI_FillRect(KEY_WIDTH*2+1,VALUE_DISP_HEIGHT+1+KEY_HEIGHT,KEY_WIDTH*2+1*2,VALUE_DISP_HEIGHT+KEY_HEIGHT*5+5);
 			GUI_FillRect(KEY_WIDTH*3+1*2,VALUE_DISP_HEIGHT+1+KEY_HEIGHT,KEY_WIDTH*3+1*3,VALUE_DISP_HEIGHT+KEY_HEIGHT*5+5);
 			GUI_FillRect(KEY_WIDTH*4+1*3,VALUE_DISP_HEIGHT+1+KEY_HEIGHT,KEY_WIDTH*4+1*4,VALUE_DISP_HEIGHT+KEY_HEIGHT*5+5);
 			GUI_FillRect(KEY_WIDTH*5+1*4,VALUE_DISP_HEIGHT+1+KEY_HEIGHT,KEY_WIDTH*5+1*5,VALUE_DISP_HEIGHT+KEY_HEIGHT*5+5);
 			GUI_FillRect(KEY_WIDTH*6+1*5,VALUE_DISP_HEIGHT+1+KEY_HEIGHT,KEY_WIDTH*6+1*6,VALUE_DISP_HEIGHT+KEY_HEIGHT*5+5);
 
-			GUI_FillRect(123,VALUE_DISP_HEIGHT+KEY_HEIGHT*4+4+1,123+1,LCD_HEIGHT);//ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			GUI_FillRect(123,VALUE_DISP_HEIGHT+KEY_HEIGHT*4+4+1,123+1,LCD_HEIGHT);//×îºóÒ»ÐÐÊúÏß
 			GUI_FillRect(358,VALUE_DISP_HEIGHT+KEY_HEIGHT*4+4+1,358+1,LCD_HEIGHT);
 	            
 			break;
@@ -163,7 +163,7 @@ static void cbKeyboardWin(WM_MESSAGE * pMsg) {
 							
 							package_to_wifi(WIFI_PARA_SET, (char *)0, 0);
 
-							//ï¿½ï¿½ï¿½ï¿½Ä¿Ç°ï¿½ï¿½ï¿½Ãµï¿½wifiï¿½Èµï¿½
+							//Á¬½ÓÄ¿Ç°ÅäÖÃµÄwifiÈÈµã
 							buf[0] = 0xA5;
 							buf[1] = 0x09;
 							buf[2] = 0x01;
@@ -430,8 +430,7 @@ static void cbKeyboardWin(WM_MESSAGE * pMsg) {
 											key_value_calc.password_disp[key_value_calc.dis_cnt++] = '\n';		
 											BUTTON_SetTextAlign(buttonPassword.btnHandle,GUI_TA_LEFT|GUI_TA_TOP);
 										}
-										// Fix Issue #6
-										key_value_calc.password_disp[key_value_calc.dis_cnt] = (uint8_t)symbol_key_value[i];
+										key_value_calc.password_disp[key_value_calc.dis_cnt] = (uint8_t)digital_key_value[i];
 								
 										BUTTON_SetText(buttonPassword.btnHandle, (const char *)key_value_calc.password_disp);
 				                    				key_value_calc.cnt++;

@@ -63,13 +63,13 @@ static void cbZoffsetWin(WM_MESSAGE * pMsg) {
 					if((gCfgItems.Zoffset>(-0.001))&&(gCfgItems.Zoffset<0.001))
 						gCfgItems.Zoffset = 0;
 					if(gCfgItems.firmware_type == 1)
-						sprintf(buf, "M851 Z%.2f\n", gCfgItems.Zoffset);
+						sprintf(buf,"M206 Z%.2f\n",gCfgItems.Zoffset);
 					else
 						sprintf(buf, "M565 Z%.2f\n", gCfgItems.Zoffset);						
 					pushFIFO(&gcodeCmdTxFIFO, (unsigned char *)buf);
-					memset(buf,0,sizeof(buf));
-					sprintf(buf, "M500\n");
-					pushFIFO(&gcodeCmdTxFIFO, (unsigned char *)buf);
+					//memset(buf,0,sizeof(buf));
+					//sprintf(buf, "M500\n");
+					//pushFIFO(&gcodeCmdTxFIFO, (unsigned char *)buf);
 
 					disp_zoffset();
 				}
@@ -80,13 +80,13 @@ static void cbZoffsetWin(WM_MESSAGE * pMsg) {
 						gCfgItems.Zoffset = 0;
 					
 					if(gCfgItems.firmware_type == 1)
-						sprintf(buf, "M851 Z%.2f\n", gCfgItems.Zoffset);
+						sprintf(buf,"M206 Z%.2f\n",gCfgItems.Zoffset);
 					else
 						sprintf(buf, "M565 Z%.2f\n", gCfgItems.Zoffset);						
 					pushFIFO(&gcodeCmdTxFIFO, (unsigned char *)buf);
-					memset(buf,0,sizeof(buf));
-					sprintf(buf, "M500\n");
-					pushFIFO(&gcodeCmdTxFIFO, (unsigned char *)buf);	
+					//memset(buf,0,sizeof(buf));
+					//sprintf(buf, "M500\n");
+					//pushFIFO(&gcodeCmdTxFIFO, (unsigned char *)buf);	
 
 					disp_zoffset();
 				}

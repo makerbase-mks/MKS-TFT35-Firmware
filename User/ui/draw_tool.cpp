@@ -18,6 +18,7 @@
 #include "draw_zero.h"
 #include "pic_manager.h"
 #include "spi_flash.h"
+#include "draw_autoLeveling.h"
 #ifndef GUI_FLASH
 #define GUI_FLASH
 #endif
@@ -78,8 +79,9 @@ static void cbDrawToolWin(WM_MESSAGE * pMsg) {
 				{
 					if(gCfgItems.leveling_mode == 1)
 					{
-						SPI_FLASH_BufferRead((u8*)cmd_code,BUTTON_AUTOLEVELING_ADDR,201);
-						codebufpoint = (u8*)cmd_code;								
+						last_disp_state = TOOL_UI;
+						Clear_Tool();
+						draw_autoLeveling();
 					}
 					else
 					{

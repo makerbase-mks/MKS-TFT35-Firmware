@@ -171,7 +171,7 @@ static void cbMoreWin(WM_MESSAGE * pMsg) {
 
 void draw_More()
 {
-if(disp_state_stack._disp_state[disp_state_stack._disp_index] != MORE_UI)
+	if(disp_state_stack._disp_state[disp_state_stack._disp_index] != MORE_UI)
 	{
 		disp_state_stack._disp_index++;
 		disp_state_stack._disp_state[disp_state_stack._disp_index] = MORE_UI;
@@ -182,21 +182,6 @@ if(disp_state_stack._disp_state[disp_state_stack._disp_index] != MORE_UI)
 	GUI_SetBkColor(gCfgItems.background_color);
 	GUI_SetColor(gCfgItems.title_color);
 	GUI_Clear();
-	#if 0
-	//GUI_SetFont(&FONT_TITLE);
-	if(gCfgItems.language == LANG_COMPLEX_CHINESE)
-	{
-		GUI_SetFont(&GUI_FontHZ16);
-	}
-	else if(gCfgItems.language == LANG_SIMPLE_CHINESE)
-	{
-		GUI_SetFont(&FONT_TITLE);
-	}
-	else
-	{
-		GUI_SetFont(&GUI_FontHZ_fontHz18);
-	}
-#endif
 
 	GUI_DispStringAt(creat_title_text(),  TITLE_XPOS, TITLE_YPOS);
 	

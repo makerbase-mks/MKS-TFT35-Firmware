@@ -55,6 +55,7 @@
 #include "draw_wifi_list.h"
 #include "draw_Tips.h"
 #include "wifi_module.h"
+#include "draw_autoLeveling.h"
 
 value_state value;
 value_type valueType;
@@ -366,6 +367,9 @@ char *getDispText(int index)
 			break;
 		case WIFI_LIST_UI:
 			strcpy(TitleText, list_menu.title);			
+			break;
+		case AUTO_LEVELING_UI:
+			strcpy(TitleText, tool_menu.autoleveling);			
 			break;
 		default:
 			break;
@@ -752,6 +756,9 @@ void clear_cur_ui()
 			case TMCSENSIVISITY_UI:
 				Clear_TMCsensitivity();
 			   break;  
+			case AUTO_LEVELING_UI:
+				Clear_autoLeveling();
+			   break;
 
 			default:
 			break;
@@ -1037,8 +1044,11 @@ void draw_return_ui()
 		case TMCSENSIVISITY_UI:
 			draw_TMCsensitivity();
 			break;  
-			default:
-				break;
+		case AUTO_LEVELING_UI:
+			draw_autoLeveling();
+			 break;
+		default:
+			break;
 		}
 	}
 
@@ -1500,7 +1510,17 @@ void GUI_RefreshPage()
 					   default:
 						break;
 				}
-				break;		
+				break;
+			case ZOFFSET_UI:
+				if(gCfgItems.zoffset_disp_flag == ENABLE)
+				{
+					gCfgItems.zoffset_disp_flag = DISABLE;
+					//获得Zoffset数值
+					DecStr2Float((int8_t *)gCfgItems.disp_zoffset_buf,(float *)&gCfgItems.Zoffset);
+					disp_zoffset();
+					memset((char *)gCfgItems.disp_zoffset_buf,0,sizeof(gCfgItems.disp_zoffset_buf));
+				}
+				break;
 			default:
 				break;
 				

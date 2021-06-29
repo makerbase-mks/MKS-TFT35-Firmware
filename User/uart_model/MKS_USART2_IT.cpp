@@ -645,6 +645,36 @@ void mksUsart2IrqHandlerUser(void)
 									break;
 								case pr_idle:		//	pr_idle=0				//非打印中 ,发送命令由外部查询gcodeCmdTxFIFO非空，启动发送
 								case pr_stop:		//	pr_stop=3
+										//chen 8.31 触屏发M851获得zoffset数值echo:Z Offset : -0.15
+										if(usart2Data.usart2Txbuf[0] == 'M' && usart2Data.usart2Txbuf[1] == '5' && usart2Data.usart2Txbuf[2] == '0' 
+											&& usart2Data.usart2Txbuf[3] == '1' && usart2Data.usart2Txbuf[4]=='\n') 
+										{
+											
+											//if(usart2Data.usart2Rxbuf[0] == 'M' && usart2Data.usart2Rxbuf[1] == '2' && usart2Data.usart2Rxbuf[2] == '0' 
+												//&& usart2Data.usart2Rxbuf[3] == '6' && usart2Data.usart2Rxbuf[4] == ' ' && usart2Data.usart2Rxbuf[5] == 'Z')
+											if(strstr((const char *)&usart2Data.usart2Rxbuf[0],(const char *)"M206"))
+											{
+												
+												//换行符号或者超过10个字节则跳出for循环
+												//数值在数组下标为26的字节开始
+												
+												//回复M206 Z0.20
+												//if(usart2Data.usart2Txbuf[4]=='\n')
+												char * temp = (char *)strstr((const char *)&usart2Data.usart2Rxbuf[0],(const char *)"Z");
+												if(temp)
+												{
+													temp++;
+													for(i=0;i<10 && *temp != '\n' ;i++)
+													{
+														gCfgItems.disp_zoffset_buf[i] = *temp++;
+													}
+													gCfgItems.disp_zoffset_buf[i] = '\0';
+												}  
+												gCfgItems.zoffset_disp_flag = ENABLE;
+												
+											}
+											
+										}
 										if(usart2Data.usart2Rxbuf[0] =='o' &&  usart2Data.usart2Rxbuf[1] =='k')
 										{
 											usart2Data.prWaitStatus = pr_wait_idle;
