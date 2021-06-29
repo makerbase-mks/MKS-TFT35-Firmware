@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-1965355776
+Checksum=-1960533884
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -36,6 +36,10 @@ ITMportsEnable=0
 ITMportsTermIO=0
 ITMportsLogFile=0
 ITMlogFile=$PROJ_DIR$\ITM.log
+[CodeCoverage]
+Enabled=_ 0
+[watch_formats]
+Fmt0={W}1:gCfgItems.rePrintFlag	4	0
 [SWOTraceWindow]
 PcSampling=0
 InterruptLogs=0
@@ -98,6 +102,33 @@ mode=0
 [Breakpoints2]
 Count=0
 [Aliases]
-A0=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\Widget\BUTTON_Bitmap.c" ""
-Count=1
-SuppressDialog=0
+A0=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\Core\GUI_DispCEOL.c" ""
+A1=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\Core\GUI_DispStringAt.c" ""
+A2=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\Core\GUI_OnKey.c" ""
+A3=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\Core\GUI_PID.c" ""
+A4=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\Core\GUI_RectsIntersect.c" ""
+A5=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\Core\GUI_SaveContext.c" ""
+A6=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\Core\GUI_SetDefault.c" ""
+A7=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\Core\GUI_TOUCH_StoreUnstable.c" ""
+A8=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\Core\GUI__IntersectRect.c" ""
+A9=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\Core\GUI__ReduceRect.c" ""
+A10=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WMTouch.c" ""
+A11=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WM_BringToBottom.c" ""
+A12=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WM_BringToTop.c" ""
+A13=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WM_CriticalHandle.c" ""
+A14=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WM_IsWindow.c" ""
+A15=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WM_NotifyParent.c" ""
+A16=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WM_Screen2Win.c" ""
+A17=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WM_SendToParent.c" ""
+A18=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WM_SetCapture.c" ""
+A19=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WM_SetFocus.c" ""
+A20=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WM__GetFirstSibling.c" ""
+A21=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WM__IsAncestor.c" ""
+A22=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WM__SendMessage.c" ""
+A23=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WM__SendMessageIfEnabled.c" ""
+A24=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\WM\WM__UpdateChildPositions.c" ""
+A25=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\Widget\BUTTON.c" ""
+A26=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI\Widget\BUTTON_Bitmap.c" ""
+A27=_ "E:\TFT_70_35\trunk\mks_TFT70 V1.0.0\Middlewares\Ucgui\GUI_X\GUI_X_Touch.c" ""
+Count=28
+SuppressDialog=1

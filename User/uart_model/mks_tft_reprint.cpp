@@ -473,6 +473,10 @@ void pauseSaveReGcode()
 	getIntToChar(x_pauseBak,RePrintData.saveX,'X');
 	getIntToChar(y_pauseBak,RePrintData.saveY,'Y');
 	getIntToChar(z_pauseBak,RePrintData.saveZ,'Z');
+
+	p=tmpGcode;			//打印头加热
+	*p++ = 'G';*p++ = '9';*p++ = '0';*p++ = '\n';
+	pushFIFO(&gcodeTxFIFO,tmpGcode);
 	
 	
 	p=tmpGcode;			//设置X,Y,Z,E当前位置
@@ -484,7 +488,7 @@ void pauseSaveReGcode()
 	pushFIFO(&gcodeTxFIFO,tmpGcode);
 
 	p=tmpGcode; 		//
-	*p++ = 'M';*p++ = '2';*p++ = '1';*p++ = '1';*p++ = ' ';*p++ = 'S';*p++ = '0';
+	*p++ = 'M';*p++ = '2';*p++ = '1';*p++ = '1';*p++ = ' ';*p++ = 'S';*p++ = '0';*p++ = '\n';
 	pushFIFO(&gcodeTxFIFO,tmpGcode);
 
 
@@ -677,6 +681,10 @@ void pauseReGcode()
 //	p=tmpGcode;			//打印头预热，不等待
 //	*p++ = 'M';*p++ = '1';*p++ = '0';*p++ = '4';*p++ = ' ';*p++ = 'S';
 
+	p=tmpGcode;			//打印头加热
+	*p++ = 'G';*p++ = '9';*p++ = '0';*p++ = '\n';
+	pushFIFO(&gcodeTxFIFO,tmpGcode);
+
 	if(gCfgItems.sprayerNum == 2)
 	{
 		p=tmpGcode;			//打印头预热，不等待
@@ -827,7 +835,7 @@ void pauseReGcode()
 	pushFIFO(&gcodeTxFIFO,tmpGcode);
 
 	p=tmpGcode; 		//
-	*p++ = 'M';*p++ = '2';*p++ = '1';*p++ = '1';*p++ = ' ';*p++ = 'S';*p++ = '0';
+	*p++ = 'M';*p++ = '2';*p++ = '1';*p++ = '1';*p++ = ' ';*p++ = 'S';*p++ = '0';*p++ = '\n';
 	pushFIFO(&gcodeTxFIFO,tmpGcode);
 
 
@@ -919,6 +927,10 @@ void deltaPauseReGcode()
 		
 //		p=tmpGcode; 		//打印头加热
 //		*p++ = 'M';*p++ = '1';*p++ = '0';*p++ = '9';*p++ = ' ';*p++ = 'S';
+		p=tmpGcode;			//打印头加热
+		*p++ = 'G';*p++ = '9';*p++ = '0';*p++ = '\n';
+		pushFIFO(&gcodeTxFIFO,tmpGcode);
+		
 		if(gCfgItems.sprayerNum == 2)
 		{
 			if(RePrintData.spayerchoose == 1)
@@ -1130,6 +1142,9 @@ void pwdwnReGcode()
 
 	//chen 9.20
 	//pushFIFO((_FIFO *)&gcodeTxFIFO,(unsigned char *)GET_CUR_TEM_COMMAND);
+	p=tmpGcode;			//打印头加热
+	*p++ = 'G';*p++ = '9';*p++ = '0';*p++ = '\n';
+	pushFIFO(&gcodeTxFIFO,tmpGcode);
 
 	if(gCfgItems.sprayerNum == 2)
 	{

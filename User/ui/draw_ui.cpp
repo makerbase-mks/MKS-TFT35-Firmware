@@ -1268,12 +1268,6 @@ void GUI_RefreshPage()
 						disp_fan_move_printing();
 					}
 					#endif
-
-					if(move_speed_flg == 1)
-					{
-						move_speed_flg =0;
-						disp_printing_speed();
-					}
 					break;
 
 			case OPERATE_UI:
@@ -1344,7 +1338,7 @@ void GUI_RefreshPage()
 					{
 						gCfgItems.move_z_coordinate[i] = RePrintData.mov_z_coordinate[i];
 						i++;
-						if(i>20)break;
+						if(i>=19)break;
 					}
 					gCfgItems.move_z_coordinate[i] = 0;
 					//GUI_DispStringAtCEOL((const char *)gCfgItems.move_z_coordinate,220, X_INTERVAL);

@@ -225,7 +225,7 @@ unsigned char homeXY()
 	volatile unsigned int i;
 	unsigned char homeGcode0[5]="M116\n";
 	unsigned char homeGcode1[4]="G91\n";
-	unsigned char homeGcode2[7]="G1 E-1\n";
+	unsigned char homeGcode2[7]="G1 E-6\n";
 	//unsigned char homeGcode3[6]="G1 Z5\n";
 	unsigned char homeGcode3[15]="G1 Z";
 	//unsigned char homeGcode2[6]="G0 Z5\n";
@@ -407,7 +407,7 @@ void relocalZ(void)
 	unsigned char homeGcode1[4]="G91\n";
 	//unsigned char homeGcode2[7]="G1 Z-5\n";
 	unsigned char homeGcode2[18]="G1 Z-";
-	unsigned char homeGcode3[9]="G1 E1.5\n";
+	unsigned char homeGcode3[9]="G1 E6.5\n";
 	//unsigned char homeGcode2[7]="G0 Z-5\n";
 	unsigned char homeGcode4[4]="G90\n";	
 
@@ -520,7 +520,7 @@ void relacalSave(void)
 	pushFIFO(&gcodeCmdTxFIFO,tmpGcode);
 
 	p=tmpGcode;			//³öË¿  "G1 E1\n";
-	*p++ = 'G';*p++ = '1';*p++ = ' ';*p++ = 'E';*p++ = '1';*p++ = '.';*p++ = '5';*p++ = '\n';
+	*p++ = 'G';*p++ = '1';*p++ = ' ';*p++ = 'E';*p++ = '6';*p++ = '.';*p++ = '5';*p++ = '\n';
 	pushFIFO(&gcodeCmdTxFIFO,tmpGcode);
 	p=tmpGcode;			//ZÖá¹éÎ»
 	*p++ = 'G';*p++ = '9';*p++ = '0';*p++ = '\n';

@@ -16,7 +16,6 @@ extern void disp_printing_speed();
 extern void disp_sprayer_tem_printing();
 extern void disp_bed_temp_printing();
 extern void disp_fan_speed_printing();
-extern void disp_printing_speed();
 extern void reset_print_time();
 extern void setProBarRate(int rate);
 extern void disp_fan_move_printing();

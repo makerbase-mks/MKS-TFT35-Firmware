@@ -201,6 +201,7 @@ HAL_StatusTypeDef HAL::AT24CXX_Write(uint16_t MemAddress, uint8_t* pBuffer, uint
 	uint8_t NumOfPage = 0, NumOfSingle = 0, Addr = 0, count = 0;
 	HAL_StatusTypeDef err = HAL_OK;
 
+
 	Addr = MemAddress % AT24CXX_PAGE_SIZE;
 	count = AT24CXX_PAGE_SIZE - Addr;
 	NumOfPage =  BufferSize / AT24CXX_PAGE_SIZE;

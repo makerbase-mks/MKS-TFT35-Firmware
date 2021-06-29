@@ -237,14 +237,11 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 						{
 							if(gCfgItems.sprayerNum == 2)
 							{
-//								if(((gCfgItems.filament_det2_level_flg == 0) && (PW_PORT_READ == 0)) || 
-//		    			    		((gCfgItems.filament_det1_level_flg == 0) && (MT_PORT_READ == 0)))
 								if((PW_PORT_READ == gCfgItems.filament_det2_level_flg) || 
-		    			    		(MT_PORT_READ == gCfgItems.filament_det1_level_flg))
-								{	
-	//                    			  Clear_dialog();
-	                    			  draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);  
-									  return;
+		    			    			(MT_PORT_READ == gCfgItems.filament_det1_level_flg))
+								{
+	                    			  			draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);  
+									return;
 								}
 							}
 							else  
@@ -252,8 +249,8 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 //								if((gCfgItems.filament_det1_level_flg == 0) && (MT_PORT_READ == 0)) 
 								if( (MT_PORT_READ == gCfgItems.filament_det1_level_flg) )
 								{	
-	                    			  draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);  
-									  return;
+	                    			  			draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);  
+									return;
 								}
 							}
 						}
@@ -312,7 +309,7 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 						MX_SDIO_SD_Init();
 						if (SD_DET_IP == SDCARDDETECTINVERTED)
 						{
-	            			FATFS_LinkDriver_sd(&SD_Driver, SD_Path);
+	            					FATFS_LinkDriver_sd(&SD_Driver, SD_Path);
 							f_mount(&fs, (TCHAR const*)SD_Path, 0);	
 						}
 						sd.ShowSDFiles();
@@ -477,7 +474,12 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 										else
 											default_preview_flg = 1;											
 										draw_printing();  
-									}    
+									}   
+									#if defined(TFT35)
+										volatile uint32_t dataFrEeprom_pwr=0xc1c2c3c4;
+										dataFrEeprom_pwr = (uint32_t)(printer_normal << 24 ) & 0xffffffff;
+										HAL::AT24CXX_Write(BAK_REPRINT_INFO,(uint8_t *) &dataFrEeprom_pwr,4);
+									#endif
 								}
 								else
 								{
@@ -489,7 +491,7 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 						  {
 						  		if((PW_PORT_READ != gCfgItems.filament_det2_level_flg) && (MT_PORT_READ != gCfgItems.filament_det1_level_flg))
 								{
-										if (printerStaus == pr_idle) {
+									if (printerStaus == pr_idle) {
 										Get_Temperature_Flg = 1;
 										get_temp_flag = 1;
 										SendOneTime = 1;
@@ -514,6 +516,11 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 											default_preview_flg = 1;											
 										draw_printing();  
 									} 
+									#if defined(TFT35)
+										volatile uint32_t dataFrEeprom_pwr=0xc1c2c3c4;
+										dataFrEeprom_pwr = (uint32_t)(printer_normal << 24 ) & 0xffffffff;
+										HAL::AT24CXX_Write(BAK_REPRINT_INFO,(uint8_t *) &dataFrEeprom_pwr,4);
+									#endif
 								}
 								else
 								{
@@ -550,6 +557,11 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 											default_preview_flg = 1;											
 										draw_printing();  
 									}
+									#if defined(TFT35)
+										volatile uint32_t dataFrEeprom_pwr=0xc1c2c3c4;
+										dataFrEeprom_pwr = (uint32_t)(printer_normal << 24 ) & 0xffffffff;
+										HAL::AT24CXX_Write(BAK_REPRINT_INFO,(uint8_t *) &dataFrEeprom_pwr,4);
+									#endif
 										 
 								}
 								else
@@ -587,6 +599,11 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 											default_preview_flg = 1;											
 										draw_printing();  
 									} 
+									#if defined(TFT35)
+										volatile uint32_t dataFrEeprom_pwr=0xc1c2c3c4;
+										dataFrEeprom_pwr = (uint32_t)(printer_normal << 24 ) & 0xffffffff;
+										HAL::AT24CXX_Write(BAK_REPRINT_INFO,(uint8_t *) &dataFrEeprom_pwr,4);
+									#endif
 								}
 								else
 								{
@@ -624,6 +641,11 @@ static void cbDlgWin(WM_MESSAGE * pMsg)
 										default_preview_flg = 1;											
 									draw_printing();  
 								}
+								#if defined(TFT35)
+									volatile uint32_t dataFrEeprom_pwr=0xc1c2c3c4;
+									dataFrEeprom_pwr = (uint32_t)(printer_normal << 24 ) & 0xffffffff;
+									HAL::AT24CXX_Write(BAK_REPRINT_INFO,(uint8_t *) &dataFrEeprom_pwr,4);
+								#endif
 							}
 							else 
 							{

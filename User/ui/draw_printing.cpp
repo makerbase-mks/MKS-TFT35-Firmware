@@ -16,6 +16,7 @@
 #include "draw_print_file.h"
 #include "CHECKBOX.h"
 #include "pic.h"
+#include "at24cxx.h"
 
 
 
@@ -254,7 +255,12 @@ switch (pMsg->MsgId)
 						if(gCfgItems.multiple_language != 0)
 						{
 							BUTTON_SetText(buttonPause.btnHandle, printing_menu.pause);
-						}						
+						}		
+						#if defined(TFT35)
+							volatile uint32_t dataFrEeprom_pwr=0xc1c2c3c4;
+							dataFrEeprom_pwr = (uint32_t)(printer_normal << 24 ) & 0xffffffff;
+							HAL::AT24CXX_Write(BAK_REPRINT_INFO,(uint8_t *) &dataFrEeprom_pwr,4);
+						#endif
 					}
 					else if(printerStaus == pr_reprint)
 					{
@@ -715,8 +721,8 @@ void draw_printing()
 		BUTTON_SetBitmapEx(buttonStop.btnHandle, 0, &bmp_struct_150, 0, 0);
 		BUTTON_SetBitmapEx(buttonOperat.btnHandle, 0, &bmp_struct_150, 0, 0);
 	
-		TEXT_SetBkColor(Printing_speed,  gCfgItems.background_color);
-		TEXT_SetTextColor(Printing_speed, gCfgItems.state_text_color);
+		//TEXT_SetBkColor(Printing_speed,  gCfgItems.background_color);
+		//TEXT_SetTextColor(Printing_speed, gCfgItems.state_text_color);
 		TEXT_SetBkColor(Zpos,  gCfgItems.background_color);
 		TEXT_SetTextColor(Zpos, gCfgItems.state_text_color);
 		TEXT_SetBkColor(printTimeLeft,	gCfgItems.background_color);
@@ -748,7 +754,7 @@ void draw_printing()
 		disp_sprayer_tem_printing();
 		disp_bed_temp_printing();
 		disp_fan_speed_printing();
-		disp_printing_speed();
+		//disp_printing_speed();
 		disp_print_time();
 		if(gCurFileState.file_open_flag != 0xaa)
 		{

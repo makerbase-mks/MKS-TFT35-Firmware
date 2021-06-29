@@ -3227,7 +3227,7 @@ void PowerOff_Filament_Check()
 				filament_det2_low_flg = 1;//启动计时
 			}
 			
-			if(filament_det2_low_cnt >= 2000)// 2s
+			if(filament_det2_low_cnt >= 3000)// 2s
 			{
 	        if(PW_PORT_READ == 1)
 				{
@@ -3246,7 +3246,7 @@ void PowerOff_Filament_Check()
 				
 			if(filament_det2_check ==1)
 			{
-				if(filament_det2_high_cnt >= 2000)
+				if(filament_det2_high_cnt >= 3000)
 				{
 					if(PW_PORT_READ == 1)
 					{
@@ -3287,7 +3287,7 @@ void PowerOff_Filament_Check()
 			if(PW_PORT_READ == 0)
 			{
 				filament_det2_flg = 1;
-				if(filament_det2_cnt >= 1000)
+				if(filament_det2_cnt >= 3000)
 				{
 					if(PW_PORT_READ == 0)
 					{
@@ -3331,7 +3331,7 @@ void PowerOff_Filament_Check()
 				filament_det1_low_flg = 1;//启动计时
 			}
 			
-			if(filament_det1_low_cnt >= 2000)// 2s
+			if(filament_det1_low_cnt >= 3000)// 2s
 			{
         if(MT_PORT_READ == 1)
 				{
@@ -3350,7 +3350,7 @@ void PowerOff_Filament_Check()
 				
 			if(filament_det1_check ==1)
 			{
-				if(filament_det1_high_cnt >= 2000)
+				if(filament_det1_high_cnt >= 3000)
 				{
 					if(MT_PORT_READ == 1)
 					{
@@ -3390,7 +3390,7 @@ void PowerOff_Filament_Check()
 			if(MT_PORT_READ == 0)
 			{
 				filament_det1_flg = 1;
-				if(filament_det1_cnt >= 1000)
+				if(filament_det1_cnt >= 3000)
 				{
 					if(MT_PORT_READ == 0)
 					{
