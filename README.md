@@ -25,3 +25,14 @@
 You need IAR or Visual Studio Code with PlatformIO.
 
 To install Visual Studio Code and PlatformIO, see instructions here: https://platformio.org/install/ide?install=vscode
+
+## Note
+- Thank you for using MKS products. If you have any questions during use, please contact us in time and we will work with you to solve it.
+- For more product dynamic information and tutorial materials, you can always follow MKS's Facebook/Twitter/Discord/Reddit/Youtube and Github. Thank you!
+- MKS Github: https://github.com/makerbase-mks  
+- MKS Facebook: https://www.facebook.com/Makerbase.mks/  
+- MKS Twitter: https://twitter.com/home?lang=en  
+- MKS Discord: https://discord.gg/4uar57NEyU
+- MKS Reddit: https://www.reddit.com/user/MAKERBASE-TEAM/ 
+![mks_link](https://user-images.githubusercontent.com/12979070/149612427-170ee564-495e-4a2c-92f5-bb400de9a58a.png)
+
